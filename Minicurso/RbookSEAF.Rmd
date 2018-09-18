@@ -1,0 +1,4051 @@
+---
+title: "Linguagem R para iniciantes: da programação básica à análise de dados"
+subtitle: "II Semana de Aperfeiçoamento em Engenharia Florestal (SEAFLOR)"
+author:
+- name: Deivison Venicio Souza
+  Email: deivisonvs@ufpa.br
+- name: Thiago Wendling Gonçalves de Oliveira
+- name: Luani Rosa de Oliveira Piva
+resumo: |
+  This is the abstract.
+fontsize: 24pt
+lang: pt-BR
+header-includes:
+  - \usepackage{multirow}
+  - \usepackage{booktabs}
+  - \usepackage{float}
+#author:
+date: '`r format(Sys.Date(),"%d/%B/%Y")`'
+#fontfamily: mathpazo
+linkcolor: blue
+urlcolor: blue
+citecolor: blue
+linestretch: 1
+#documentclass: book
+#fonttheme: "serif"
+#classoption: oneside
+geometry: margin=0.8in
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: vignette
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+    highlight: tango
+    keep_md: true
+    fig_width: 5
+    fig_height: 5
+    fig_caption: true
+  pdf_document:
+    latex_engine: lualatex
+    toc: yes
+    toc_depth: 3
+    df_print: kable
+    number_sections: true
+    highlight: tango
+    fig_width: 6
+    fig_height: 6
+    fig_caption: true
+    keep_tex: true
+    #indent: true
+csl: ABNT_UFPR_2018.csl
+bibliography: SE@FLOR2018.bib
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+library(rmarkdown)
+library(ggplot2)
+library(data.table)
+require(plyr)
+require(kable)
+knitr::opts_chunk$set(fig.align="center", cache=TRUE, prompt=FALSE)
+```
+
+# O ambiente R
+
+## Um software estatístico livre
+
+R é um ambiente de software livre de estatística e gráficos, capaz de compilar e executar em uma ampla variedade de plataformas UNIX, Windows e MacOS. Para fazer o download do R, é necessário escolher um [espelho CRAN](https://cran.r-project.org/) para que seja feito o download da versão mais atual.
+Os **espelhos CRAN** são servidores distribuídos em diversos países que armazenam o software R. Assim, ao deixar escolher de qual servidor será feito o download, permite-se que o usuário defina o servidor mais próximo de sua localização, reduzindo o tempo de tráfego.
+
+# Instalação do RGui e Rstudio
+
+## O RGui
+### Processo de download e instalação (p/ Windows)
+
+**1\textsuperscript{o} PASSO**: Acessar a página do projeto R em https://www.r-project.org/;
+
+**2\textsuperscript{o} PASSO**: Do lado esquerdo da página clique sobre o link **CRAN**;
+
+**3\textsuperscript{o} PASSO**: Será aberta uma página com diversos links de **CRAN Mirrors**, isto é, espelhos CRAN. O ideal é selecionar o servidor mais próximo da sua localização para fazer o download do **R Development Core Team**. Veja na tabela  os principais espelhos disponíveis no Brasil.
+
+| $\textbf{ Link }$                               | $\textbf{ Instituição }$                                     |
+|-----------------------------------------------|-------------------------------------------------------------|
+| http://cran-r.c3sl.ufpr.br/                   | $\color{blue}{\textbf{Universidade Federal do Paraná (UFPR)}}$
+| http://nbcgib.uesc.br/mirrors/cran/           | Center for Comp Biol at Universidade Estadual de Santa Cruz |
+| https://cran.fiocruz.br/                      | Oswaldo Cruz Foundation, Rio de Janeiro                     |
+| http://cran.fiocruz.br/                       | Oswaldo Cruz Foundation, Rio de Janeiro                     |
+| https://vps.fmvz.usp.br/CRAN/                 | University of São Paulo, São Paulo                          |
+| http://brieger.esalq.usp.br/CRAN/             | University of São Paulo, Piracicaba                         |
+
+**4\textsuperscript{o} PASSO**: Na página http://cran-r.c3sl.ufpr.br/, na seção **Download and Install R**, clicar em um dos três links, conforme o SO do usuário: \newline
+
+1. **Download R for Windows**; \newline
+2. **Download R for Linux; ou** \newline
+3. **Download R for (Mac) OS X.** \newline
+
+**5\textsuperscript{o} PASSO**: Clicar no link do **subdiretório base** ou em **install R for the first time**, para instalar o R pela primeira vez;
+
+**6\textsuperscript{o} PASSO**: Clicar em **Download R** ($\color{blue}{escolher~versão}$) **for** ($\color{blue}{escolher~SO}$). Assim, será iniciado o download do R Development Core Team para o respectivo sistema; e
+
+**7\textsuperscript{o} PASSO**: Por fim, basta usar o setup para instalar o programa.
+
+## O editor Rstudio
+### Processo de download e instalação (p/ Windows)
+
+**1\textsuperscript{o} PASSO**: Acessar a página do projeto RStudio: https://www.rstudio.com;
+
+**2\textsuperscript{o} PASSO**: Products $\rightarrow$ RStudio;
+
+**3\textsuperscript{o} PASSO**: Selecionar a versão do RStudio para Desktop;
+
+**4\textsuperscript{o} PASSO**: Na edição Open source $\rightarrow$ Download Rstudio Desktop;
+
+**5\textsuperscript{o} PASSO**: Installers for Supported Platforms $\rightarrow$ instalador RStudio; e
+
+**6\textsuperscript{o} PASSO**: Por fim, basta usar o setup baixado para instalar o programa.
+
+# Iniciando no ambiente R
+
+## A janela inicial do RGui
+
+No contato inicial do usuário com o **RGui** tem-se a visão inicial do **R Console** com a versão do R em uso e as condições de licenciamento. Algumas funções de teste são mostradas e, para saber o que cada função retorna basta digitá-las no **prompt de comando** do R Console simbolizado pelo sinal
+$\color{red}{\textbf{>}}$ (maior) em vermelho. Haverá um **cursor** piscando à direita do prompt, indicando o local para digitar os comandos para o R.
+
+```{r echo=FALSE, dpi=600, out.width='700pt', out.height='500pt'}
+knitr::include_graphics("Img1.png",  dpi = 600)
+```
+
+Execute as funções $\color{magenta}{\textbf{demo()}}$, $\color{magenta}{\textbf{help()}}$, $\color{magenta}{\textbf{help.start()}}$ e $\color{magenta}{\textbf{q()}}$.
+
+## Operações e operadores aritméticos
+A linguagem R permite executar operações aritméticas básica (soma, subtração, multiplicação, divisão e potenciação):
+
+**Operadores** |**Nome**                       |**Operações**
+:-------------:|:-----------------------------:|:-------------:
+$\textbf{+}$            | Somatório                     |2+3           
+$\textbf{*}$               | Multiplicação                 |4*9
+$\textbf{/}$               | Divisão                       |20/5
+$\textbf{-}$               | Subtração                     |32-10
+$\textbf{^ ou **}$         | Potenciação                   |5^3
+$\textbf{%%}$              | Resto inteiro da divisão      |10%%3
+$\textbf{%/%}$             | Parte inteira da divisão      |10%/%3
+
+```{r Oper arit, collapse=TRUE}
+2+3                             # Soma
+4*9                             # Multiplicação
+20/5                            # Divisão
+32-10                           # Subtração
+5^3                             # Potenciação
+10%%3                           # Resto inteiro da divisão
+10%/%3                          # Parte inteira da divisão 
+```
+
+\newpage
+## Operadores lógicos
+
+| $\textbf{Operadores lógicos}$ | $\textbf{Descrição}$            |
+|-----------------------------|-------------------------------|
+| $\textbf{<}$                  | Menor do que...               |
+| $\textbf{>}$                  | Maior do que...               |
+| $\textbf{<=}$                 | Menor ou igual do que...      |
+| $\textbf{>=}$                 | Maior ou igual do que...      |
+| $\textbf{==}$                 | Igual a...                    |
+| $\textbf{\&}$                 | E (and)/para vetores          |
+| $\textbf{\&\&}$               | E (and)                       |
+| $\textbf{|}$                  | Ou (or)/para vetores          |
+| $\textbf{||}$                 | Ou (or)                       |
+| $\textbf{!=}$                 | Diferente de...               |
+| $\textbf{!}$                  | Não...                        |
+| $\textbf{is.na()}$            | Valor numérico ou faltante... |
+
+
+## Alguns comandos básicos
+
+| $\textbf{Comando}$                                                                | $\textbf{Ação}$                                  |
+|---------------------------------------------------------------------------------|------------------------------------------------|
+| $\color{magenta}{\textbf{ls()}}$ ou $\color{magenta}{\textbf{objects()}}$   | Listar os objetos na janela de trabalho atual  |
+| $\color{magenta}{\textbf{rm()}}$                                              | Remover um objeto qualquer                     |
+| $\color{magenta}{\textbf{help()}}$                                            | Solicitar ajuda sobre o uso de uma função      |
+| $\color{magenta}{\textbf{Ctrl + L}}$                                          | Limpar a tela do R console                     |
+| $\color{magenta}{\textbf{history()}}$                                        | Listar os últimos comandos executados          |
+| $\color{magenta}{\textbf{getwd()}}$                                           | Mostrar o diretório de trabalho                |
+| $\color{magenta}{\textbf{setwd()}}$                                           | Mudar o diretório de trabalho                  |
+| $\color{magenta}{\textbf{install.packages()}}$                                | Instalar um pacote específico                  |
+| $\color{magenta}{\textbf{q()}}$                                               | Fechar o console R                             |
+| $\color{magenta}{\textbf{library()}}$                                         | Carregar um pacote específico                  |
+| $\color{magenta}{\textbf{dir()}}$                                             | Listar os arquivos existentes no diretório     |
+| $\color{magenta}{\textbf{getOption("OutDec")}}$                               | Verificar o separador decimal definido         |
+| $\color{magenta}{\textbf{options(OutDec=",")}}$                               | Mudar o separador decimal para vírgula         |
+| $\color{magenta}{\textbf{round(x, digits=0)}}$                                | Função para arredondamento de casas decimais   |
+| $\color{magenta}{\textbf{data()}}$                                            | Lista os conjuntos de dados dos pacotes atualmente carregados             |
+| $\color{magenta}{\textbf{?nome_do_dataset}}$                                    | Obter informações detalhadas sobre um data set |
+| $\color{magenta}{\textbf{class()}}$                                           | Verificar a classe de um objeto específico     |
+| $\color{magenta}{\textbf{search()}}$                                          | Listar todos os pacotes carregados             |
+
+# Estrutura de dados no R
+
+## Tipos de objetos no R
+
+Os objetos são criados no R com o objetivo de $\textbf{armazenar dados}$. Todo objeto em R têm uma classe, que pode ser descoberta usando a função $\color{magenta}{\textbf{class()}}$. Os objetos-vetores podem ser do tipo **numeric**, **logical**, **character**, etc. Outros objetos incluem **matrizes**, **data frames**, **funções**, **listas**, **arrays**. \newline
+
+Antes de iniciar as seções que detalham os tipos de objetos existentes no R é importante saber como nomeá-los. Assim, podemos listar algumas condições para atribuição de nomes à objetos:
+
+1. O nome do objeto deve, necessariamente, iniciar com uma letra;
+2. Pode-se usar letras maiúsculas ou minúsculas no nome do objeto;
+3. O nome dos objetos são sensíveis às letras maiúsculas ou minúsculas (ex: Ufpr / ufpr);
+4. O nome não pode ter símbolos de funções ou operações matemáticas (+; /; -; *; ^);
+5. Números (0 a 9) podem ser inseridos no nome do objeto, exceto na primeira posição;
+6. Não se pode usar espaço entre os nomes dos objetos (alternativa = usar ponto ($\textbf{.}$) ou underline ($\textbf{_}$);
+7. Para atribuir o nome a um objeto deve-se usar o comando \textbf{<-} (recebe); e
+8. Pode-se usar também a função \textcolor{magenta}{\textbf{assign()}} para fazer atribuição (menos comum).
+
+Obs.: O R é $\color{red}{\textbf{case sensitive}}$, isto é, diferencia letras maiúsculas e minúsculas.
+
+### Vetores
+
+O vetor é o tipo de objeto mais importante em R, constituindo a forma mais simples de armazenar dados. São caracterizados por possuírem somente uma dimensão e, todos os elementos constituintes devem ter, obrigatoriamente, a mesma natureza (classe).
+
+Os vetores podem ser considerados como células contíguas que contém dados. Estas células podem ser acessadas por meio de operações de indexação [(R Language Definition).](http://stat.ethz.ch/R-manual/R-devel/doc/manual/R-lang.html#Objects)
+
+As principais classes de vetores são:
+
+1. numeric; 
+2. character; 
+3. integer; 
+4. logical;
+5. complex; e
+6. factor.
+
+#### Quais funções usar para criar um vetor?
+
+**a) Função** $\color{magenta}{\textbf{c()}}$ (concatenate): Função genérica que permite concatenar (combinar) argumentos para formar um vetor.
+
+
+**b) Função** $\color{magenta}{\textbf{seq()}}$ (sequence): Função genérica usada para gerar sequências de números em intervalos pré-definidos. Os principais parâmetros da função $\color{magenta}{\textbf{seq()}}$:
+
+$\textbf{Sintaxe}$
+
+$\color{black}{\textbf{seq(from = ?, to = ?, by= ?, length.out = ?, along.with = ?)}}$
+
+Onde:
+
+$\color{magenta}{\textbf{from}}$ = define um valor inicial (start) para a sequência;
+
+$\color{magenta}{\textbf{to}}$ = define um valor máximo para a sequência;
+
+$\color{magenta}{\textbf{by}}$ = define um valor incremental para a sequência;
+
+$\color{magenta}{\textbf{length.out}}$ = define o comprimento da sequência dentro de um intervalo; e
+
+$\color{magenta}{\textbf{along.with}}$ = define uma sequência de inteiros do tamanho do argumento repassado.
+
+
+**c) Função** $\color{magenta}{\textbf{rep()}}$ (replicate): Função genérica usada para replicar um valor **"x"** . Os principais parâmetros da função $\color{magenta}{\textbf{rep()}}$:
+
+$\textbf{Sintaxe}$
+
+$\color{black}{\textbf{rep(x = ?, times = ?, each = ?)}}$
+
+Onde:
+
+$\color{magenta}{\textbf{x}}$ = escalar, vetor (incluindo uma lista), entre outros;
+
+$\color{magenta}{\textbf{times}}$ = Um vetor inteiro (não negativo) indicando quantas vezes repetir cada elemento; e
+
+$\color{magenta}{\textbf{each}}$ = Cada elemento de **x** é repetido **n** vezes.
+
+
+**d) Função** $\color{magenta}{\textbf{scan()}}$: Usada para criar vetores diretamente no **R Console**.
+
+Existe uma sutil diferença ao utilizar a função $\color{magenta}{\textbf{c()}}$ para criar vetores de **números** ou de **caracteres**. 
+
+- **Vetor numérico:** Deve-se concatenar os números separando-os por **vírgula**; e
+
+- **Vetor de caractere:** Deve-se escrever cada elemento entre **aspas** e separá-los por **vírgula**. 
+
+
+**a) Função** $\color{magenta}{\textbf{c()}}$ (concatenate):
+
+```{r , eval=FALSE}
+# Criando objeto-vetor e atribuindo nomes.
+
+c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+assign("especie", c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe"))
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")     
+
+c(23.0, 27.0, 33.6, 42.6, 52.1)
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+
+c(8.5, 9.2, 10.5, 13.4, 15.8)
+altura <- c(8.5, 9.2, 10.5, 13.4, 15.8)
+```
+
+Obs.: A Função $\color{magenta}{\textbf{assign()}}$ também pode ser usada para concatenar.
+
+$\textbf{Elementos de diferentes naturezas no mesmo vetor?}$
+
+Você já sabe que um vetor é constituído por elementos de uma mesma classe (natureza). Então, o que aconteceria caso tentássemos criar um vetor com elementos de diferentes naturezas? Neste caso, o R fará com que todos os elementos do vetor tenham o mesma natureza.
+
+Considere a criação de um vetor com dois tipos de elementos: **numérico** e **caractere**
+
+```{r , eval=TRUE, collapse=TRUE }
+x <- c(42.6, 23.0, 27.0, 33.6, "Acapu")
+print(x)
+class(x)
+```
+
+Perceba que na existência de um elemento do tipo **caractere** (strings) todos os elementos númericos foram transformados para caractere (elementos ficaram entre aspas!). Assim, a classe do vetor é coagida a **character**. Isto siginifica, por exemplo, que o primeiro elemento do vetor "x" é a string "42.6" e não um número 42.6. Em consequência, operações matemáticas não poderiam ser aplicadas sobre este vetor.
+
+**b) Função** $\color{magenta}{\textbf{seq()}}$ (sequence):
+
+$\color{black}{\textbf{seq(from = ?, to = ?, by = ?, length.out = ?, along.with = ?)}}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+
+seq(10)                             # Sequência de 1 a 10, com intervalo 1.
+
+seq(1:10)                           # Sequência de 1 a 10, com intervalo 1.
+
+seq(from = 1, to = 10, by = 1)      # Sequência de 1 a 10, com intervalo 1.
+
+seq(from = -2, to = 10, by = 2)     # Sequência de -2 a 10, com intervalo 2.
+
+seq(from=0, to=1, length.out = 11)  # Sequência de 11 números entre 0 e 1.
+
+seq(along.with = especie)           # Sequência do tamanho do vetor-espécie.
+```
+
+**c) Função** $\color{magenta}{\textbf{rep()}}$ (replicate):
+
+$\color{black}{\textbf{rep(x = ?, times = ?, each = ?)}}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+rep(x = 1:4, 2)                  # Repete a sequência de 1 a 4 (2x).
+
+rep(1:4, times = 3)              # Repe a sequência de 1 a 4 (3x).
+
+rep(x = 1:4, each = 2)           # Repete cada valor em "x" (2x).
+
+rep(1:4, c(2,2,2,2))             # Repete cada valor em "x" (2x).
+
+rep(1:4, c(2,1,2,1))             # Repete cada valor em "x", com base em c().
+
+rep(1:4, each = 2, len = 4)      # Repete cada valor em "x", até 4 números.
+
+rep(1:4, each = 2, len = 10)     # Regra da reciclagem.
+
+rep(1:4, each = 2, times = 3)    # Repete cada valor em "x" (2x), por 3x.
+```
+
+**d) Função** $\color{magenta}{\textbf{scan()}}$
+
+Crie os vetores abaixo usando a função $\color{magenta}{\textbf{scan()}}$:
+
+```{r , eval=TRUE, collapse=TRUE }
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+
+altura <- c(8.5, 9.2, 10.5, 13.4, 15.8)
+
+```
+
+#### Como identificar a classe de um objeto-vetor no R?
+
+A identificação da classe de um objeto-vetor no R pode ser feita usando a função $\color{magenta}{\textbf{class()}}$. Além disso, existem funções lógicas que testam a classe de um objeto-vetor:
+
+$\color{magenta}{\textbf{is.numeric()}}$;
+
+$\color{magenta}{\textbf{is.character()}}$;
+
+$\color{magenta}{\textbf{is.factor()}}$;
+
+$\color{magenta}{\textbf{is.integer()}}$; e
+
+$\color{magenta}{\textbf{is.logical()}}$.
+
+
+**a) Objeto-vetor da classe "numeric"**
+
+```{r , eval=TRUE, collapse=TRUE }
+a <- 45; class(a); is.numeric(a)
+
+b <- pi; class(b); is.numeric(b)
+
+c <- sqrt(2); class(c); is.numeric(c)
+
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+
+class(diametro); is.numeric(diametro)
+```
+
+
+**b) Objeto-vetor da classe "character"**
+
+
+```{r , eval=TRUE, collapse=TRUE }
+d <- "olá Mundo"; class(d); is.character(d)
+
+e <- c("Quem vai ao Pará", "Parou", "tomou açai, ficou!")
+class(e); is.character(e)
+
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+class(especie); is.character(especie)
+
+```
+
+
+**c) Objeto-vetor da classe "factor"**
+
+
+A função $\color{magenta}{\textbf{factor()}}$ é usada para codificar um vetor como um "fator" (categorias). Outra alternativa é usar a função de conversão $\color{magenta}{\textbf{as.factor()}}$.
+
+Um dos usos mais importantes dos fatores está na modelagem estatística. As variáveis categóricas entram em modelos estatísticos de maneira diferente das variáveis contínuas. Assim, o armazenamento de dados como fatores garante que as funções de modelagem tratem esses dados corretamente. 
+
+Os fatores em R são armazenados como um vetor de valores inteiros com um conjunto correspondente de valores de caractere a serem usados quando o fator é exibido. Os níveis (**levels**) de um fator sempre serão valores de caracteres.
+
+No exemplo a seguir, observe que o objeto-vetor **cortar** ao ser impresso no console do R pertence à classe **character**, e todos os seus valores são mostrados entre “aspas”. Iremos usar a função $\color{magenta}{\textbf{factor()}}$ para transformar o objeto-vetor para a classe **factor**. Feito isso, você perceberá que os elementos não serão impressos entre “aspas” e, ainda, que foram transformados em níveis de fator, no caso **Não** e **Sim**.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+cortar <- c("Não", "Não", "Não", "Não", "Sim", "Sim")
+print(cortar); class(cortar)
+
+fcortar <- factor(cortar)
+print(fcortar)
+```
+
+Os **rótulos** (nomes) dos níveis de fatores podem ser alterados através do argumento **labels**:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+fuste <- c(1, 2, 2, 3, 1, 2, 3, 3, 1, 2, 3, 3, 1, 4, 4)
+print (fuste); class(fuste)
+
+ffuste <- factor(x = fuste, 
+                 labels = c("I","II","III", "IV"))
+print(ffuste)
+
+levels(ffuste)
+```
+
+Por default os fatores (levels) ficam dispostos em ordem alfabética:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Fatores (levels) em ordem alfabética!
+
+mes <- c ("Março", "Abril", "Janeiro", "Novembro", 
+          "Agosto","Setembro", "Outubro", "Julho", 
+          "Dezembro", "Fevereiro", "Maio", "Junho")
+class(mes)
+
+fmes <- factor(mes)
+class(fmes)
+
+print(fmes)
+
+```
+
+
+Pode-se declarar explicitamente que existe uma hierarquia entre os fatores usando **ordered = TRUE**.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Fatores ordenados
+fmes2 <- factor(x = mes, 
+         levels = c("Janeiro", "Fevereiro", "Março", "Abril", 
+                     "Maio", "Junho", "Julho", "Agosto", 
+                     "Setembro", "Outubro", "Novembro", "Dezembro"),
+              ordered = TRUE);
+class(fmes2)
+print(fmes2)
+```
+
+
+#### Elementos especias
+
+Todo objeto-vetor pode possuir elementos especiais: **NA** (**Not Available**). Esta **string** dentro de um objeto-vetor significa um valor desconhecido. Por exemplo, imagine que você realizou uma prova em uma turma de 10 alunos, porém 2 faltaram. Poderíamos específicar um vetor de notas sem desconsiderar a existência dos alunos que faltaram:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Not Available
+notas <- c(5.6, 6.7, NA, 8.9, 2.3, 5.6, 7.8, 8.9, 6.1, NA)
+print(notas)
+length(notas)
+is.na(notas)
+```
+
+### Matrizes
+
+#### Como criar matrizes?
+
+As matrizes diferenciam-se dos vetores por admitirem duas dimensões, expressas por **linhas** e **colunas**. Uma matriz pode ser formada por elementos **numéricos** e/ou **caracteres** (strings) na sua estrutura.
+
+A construção de matrizes no R pode ser feita com uso das funções $\color{magenta}{\textbf{rbind()}}$ (**row bind**) e $\color{magenta}{\textbf{cbind()}}$ (**colum bind**). No entanto, o mecanismo mais eficiente para construir matrizes é usar a função $\color{magenta}{\textbf{matrix()}}$.
+
+As funções $\color{magenta}{\textbf{rbind()}}$ e $\color{magenta}{\textbf{cbind()}}$ organizam objetos-vetores em **linhas** ou **colunas**, respectivamente.
+
+Quando utilizadas as funções $\color{magenta}{\textbf{rbind()}}$ e $\color{magenta}{\textbf{cbind()}}$ para construir matrizes a partir de vetores de diferentes classes (ex.: mat.2 e mat.4), todos os dados numéricos da matriz são convertidos em **caracteres**, fato evidenciado pelos números entre aspas na saída.
+
+
+**a) Função** $\color{magenta}{\textbf{rbind()}}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+altura <- c(8.4, 8.7, 9.1, 13.2, 15.4)
+
+mat.1<-rbind(diametro, altura)
+print(mat.1)
+
+mat.2<-rbind(especie, diametro)
+print(mat.2)
+```
+
+**b) Função** $\color{magenta}{\textbf{cbind()}}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+mat.3 <- cbind(diametro, altura)
+print(mat.3)
+
+mat.4 <- cbind(especie, diametro, altura)
+print(mat.4)
+```
+
+
+**c) Função** $\color{magenta}{\textbf{matrix()}}$
+
+
+A maneira mais prática para criar matrizes no R é usar a função $\color{magenta}{\textbf{matrix()}}$.
+
+$\color{black}{\textbf{matrix(data = NA, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL)}}$
+
+Onde:
+
+$\color{magenta}{\textbf{data}}$ = Um vetor de dados opcional;
+
+$\color{magenta}{\textbf{nrow}}$ = Número desejado de linhas;
+
+$\color{magenta}{\textbf{ncol}}$ = Número desejado de colunas; 
+
+$\color{magenta}{\textbf{byrow}}$ = Argumento lógico. Se **FALSE = default** (a matriz é preenchida por colunas). Se TRUE (matriz é preenchida por linhas); e 
+
+$\color{magenta}{\textbf{dimnames}}$ = Insere os rótulos das linhas e colunas da matriz com a função  $\color{magenta}{\textbf{list()}}$.
+
+Para facilitar a identificação pode-se atribuir rótulos às linhas e colunas da matriz. Para tanto, pode-se usar as funções $\color{magenta}{\textbf{rownames()}}$  e $\color{magenta}{\textbf{colnames()}}$ ou o argumento **dimnames** em $\color{magenta}{\textbf{matrix()}}$.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Cria uma matriz de 1 a 6, com 2 linhas e 3 colunas
+mat.5 <- matrix(1:6, nrow=2, ncol=3) 
+print(mat.5)
+
+# Atribui nomes às linhas e colunas da “mat.5”
+rownames(mat.5) <- c("L1","L2") 
+print(mat.5)
+
+colnames(mat.5) <- c("C1","C2","C3")
+print(mat.5)
+```
+
+
+Pode-se usar objetos-vetores já existente na função $\color{magenta}{\textbf{matrix()}}$:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Criar uma matriz a partir de objetos-vetores existente
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+
+mat.6 <- matrix(diametro, nrow=5, ncol=1, byrow = TRUE,
+              dimnames = list(especie)); print(mat.6)
+```
+
+
+Atribuindo nome a única coluna da matriz 6 usando $\color{magenta}{\textbf{colnames()}}$:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+colnames(mat.6) <- "diâmetro"
+
+print(mat.6)
+
+```
+
+
+Atribuindo nomes às linhas e colunas com o argumento **dimnames** de $\color{magenta}{\textbf{matrix()}}$:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+mat.7<-matrix(1:6, nrow=2, ncol=3, byrow = TRUE, 
+              dimnames = list(c("L1", "L2"), 
+                              c("C1", "C2", "C3")))
+print(mat.7)
+
+```
+
+
+#### Situações especiais
+
+Na criação de matrizes é interessante atentar-se para algumas situações especiais:
+
+**a) Descarte de elementos:** Quando a quantidade de elementos em for > (ncol x nrow); e
+
+**b) Regra da Reciclagem:** Quando ncol x nrow for > do que a quantidade de elementos.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Número de elementos > ncol x nrow (Descarte)
+mat.8 <- matrix(1:9, nrow=2, ncol=3, byrow = TRUE, 
+              dimnames = list(c("L1", "L2"), 
+                              c("C1", "C2", "C3")))
+print(mat.8)
+
+# ncol x nrow > número de elementos (Reciclagem)
+mat.9 <- matrix(1:6, nrow=3, ncol=3, byrow = TRUE, 
+              dimnames = list(c("L1", "L2", "L3"), 
+                              c("C1", "C2", "C3")))
+print(mat.9)
+```
+
+
+### Data frames
+
+
+O **data frame** é bastante similar a **matriz**, porém é capaz de reunir vetores de diferentes classes (naturezas) com a condição de possuírem **igual comprimento**.
+
+Para criar **data frames** diretamente no R pode-se usar das funções $\color{magenta}{\textbf{data.frame()}}$ ou $\color{magenta}{\textbf{edit()}}$. Em geral, quando importa-se dados para o R, oriundos de um arquivo .CSV ou .txt pelos comandos $\color{magenta}{\textbf{read.csv()}}$ e $\color{magenta}{\textbf{read.table()}}$, respectivamente, o R armazena-os no formato de um data frame.
+
+Após, criar o data frame é interessante avaliar a sua estrutura através das funções $\color{magenta}{\textbf{str()}}$ e $\color{magenta}{\textbf{dim()}}$. A funcão $\color{magenta}{\textbf{str()}}$ retorna as colunas com suas respectivas classes e número de observações por variável.
+
+Ainda, deve-se notar que a função $\color{magenta}{\textbf{data.frame()}}$ transforma por default as variáveis qualitativas em fatores (classe factor) com a especificação da quantidade de níveis (levels). Isso ocorre devido a argumentação $\color{blue}{\textbf{stringsAsFactors}}$ da funcão $\color{magenta}{\textbf{data.frame()}}$ que possui como default transformar qualquer variável qualitativa em fator. Caso a transformação não seja desejável basta usar o comando $\color{blue}{\textbf{stringsAsFactors}}$ = **FALSE**. Assim, as variáveis qualitativas serão mantidas no formato **character**.
+
+
+**a) Função** $\color{magenta}{\textbf{data.frame()}}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Criar data frame a partir de vetores existentes
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+altura <- c(8.4, 8.7, 9.1, 13.2, 15.4)
+cortar <- c("Não", "Não", "Não", "Não", "Sim")
+
+invFlor.1 <- data.frame(especie, diametro, altura, cortar,
+                        stringsAsFactors = TRUE)
+print(invFlor.1)
+
+# Observe a ação de stringsAsFactors = TRUE: factor.
+str(invFlor.1)
+
+dim(invFlor.1)
+
+```
+
+```{r , eval=TRUE, collapse=TRUE }
+# Cria data frame com apenas um comando
+invFlor.2 <- data.frame(
+  Especie = c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe"), 
+  diametro = c(23.0, 27.0, 33.6, 42.6, 52.1),
+  altura = c(8.4, 8.7, 9.1, 13.2, 15.4),
+  cortar = c("Não", "Não", "Não", "Não", "Sim"),
+  stringsAsFactors = FALSE)
+
+print(invFlor.2)
+
+# Observe a ação de stringsAsFactors = FALSE: character.
+str(invFlor.2)
+
+dim(invFlor.2)
+```
+
+**b) Função** $\color{magenta}{\textbf{edit()}}$
+
+A função $\color{magenta}{\textbf{edit()}}$ pode ser usada para editar data frames já existentes, ou ainda, para iniciar uma tabulação de dados diretamente no R. Assim, ao executar o comando $\color{magenta}{\textbf{edit(data.frame())}}$ será aberto um **R Data Editor** “vazio” permitindo a organização e tabulação de dados de modo similar ao Microsoft Excel. 
+
+No entanto, se o data frame já existe, você terá a opção de editá-lo através do comando $\color{magenta}{\textbf{edit(nome do df)}}$, de tal modo que o data.frame será aberto no **R Data Editor**, admitindo a alteração ou correção de quaisquer informações que desejar.
+
+```{r , eval=TRUE, collapse=TRUE }
+# Crie um data frame com o comando edit() e atribua a "invFlor.3"
+invFlor.3 <- edit(data.frame())
+
+# Edite as informações do data frame “invFlor.2” e atribua a "invFlor.4"
+invFlor.4 <- edit(invFlor.2)
+```
+
+### Listas
+
+Uma **lista** é um objeto que constituí uma coleção ordenada de objetos conhecidos. Um aspecto importante da **lista** é que admite diferentes estruturas (vetores, matrizes, data frames e, inclusive outras listas). A função $\color{magenta}{\textbf{list()}}$ é usada para criar uma lista. Se os objetos já existem pode-se simplesmente adicioná-los à função $\color{magenta}{\textbf{list()}}$.
+
+Diferentemente de data frames as **listas** admitem vetores de comprimentos distintos. O número de componentes de uma lista (nível superior) pode ser obtido usando a função $\color{magenta}{\textbf{length(nome do objeto)}}$.
+
+Os componentes de uma lista podem ser nomeados. Fazendo-se isso, o acesso aos seus componentes (nível superior) pode ser feito com uso de $\color{red}{\$}$ (dólar) ao invés de $\color{red}{[[~~]]}$ (colchetes duplos). Nomear os níveis superior da lista é bastante útil, pois facilita a identificação do componente a ser acessado por indexação. (estudaremos indexação de objetos mais adiante!)
+
+
+**Função** $\color{magenta}{\textbf{list()}}$
+
+Pode-se criar uma lista a partir de **objetos já existentes**. A seguir um exemplo de lista cujos componentes são objetos-vetores:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Cria objetos-vetores
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+altura <- c(8.4, 8.7, 9.1, 13.2, 15.4)
+
+# lista sem atribuir nomes aos os objetos
+list.1 <- list(especie, diametro, altura)
+print(list.1)
+
+length(list.1)
+```
+
+Pode-se criar uma lista com **diferentes classes de objetos**. A seguir uma lista com três componentes: **um vetor**, **uma matriz** e **um data frame**:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+#---------------------------------------------------------------------
+# Uma lista com diferentes classes de objetos
+list.2 <- list(diametro, mat.7, invFlor.1)
+print(list.2)
+
+length(list.2)
+
+str(list.2)
+```
+
+Os componentes de uma lista podem ser nomeados. Fazendo isso, a identificação e a indexação dos componentes é facilitada.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+#---------------------------------------------------------------------
+# Uma lista de objetos-vetores (nomeados)
+list.2 <- list(vetor = diametro, matriz = mat.7, DF = invFlor.1)
+print(list.2)
+
+length(list.2)
+
+list.3 <- list(Especie = especie, Diametro = diametro, Altura = altura)
+print(list.3)
+
+length(list.3)
+
+```
+
+
+**Concatenando listas**
+
+Quando a intenção é unir diferentes **listas** em um único objeto pode-se usar a função $\color{magenta}{\textbf{c()}}$. O novo objeto criado será também uma **lista**, cujos componentes serão os mesmos dos objetos-listas concatenados e, dispostos na ordem dos argumentos repassados.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+list.4 <- list(Especie = especie, Diametro = diametro)
+list.5 <- list(Altura = altura, Cortar = cortar)
+list.6 <- c(list.4, list.5)
+
+print(list.6)
+```
+
+**Lista** $\rightarrow$ **Data frame**: Usar a função $\color{magenta}{\textbf{as.data.frame()}}$
+
+Um objeto-lista pode ser coagido (transformado) em um data frame usando a função \textcolor{magenta}{\textbf{as.data.frame()}}, desde que as restrições de criação de data frames sejam satisfeitas. Isto é, a lista a ser coagida deve possuir vetores de igual comprimento.
+
+```{r , eval=TRUE, collapse=TRUE }
+as.data.frame(list.6)
+```
+
+# Indexação no R
+
+## Mecanismos de indexação
+
+Quando o interesse é **extrair**, **excluir** ou **substituir** elementos de objetos é possível fazê-lo usando-se de algum **mecanismo de indexação**, que dependerá do tipo de objeto manejado. Isto é, usa-se de um mecanismo de localização da posição do elemento.
+
+**O que signifa indexar?**
+
+Dispor em índice, numa lista que metodicamente indica o conteúdo de alguma coisa; ordenar: indexar os livros de uma biblioteca [(Dicio, Dicionário Online de Português).](https://www.dicio.com.br/indexar/)
+
+Em termos gerais, existem seis modos de indexar valores no R:
+
+1. Nomes;
+2. Valores lógicos;
+3. Inteiros positivos;
+4. Inteiros negativos;
+5. Espaço em branco; e
+6. Zero.
+
+Para indexar elementos ou subconjuntos de objetos no R existem três operadores básicos: $\color{red}{[ ~~]}$, $\color{red}{[[~~]]}$ e $\color{red}{\$}$.
+
+- O operador $\color{red}{[~~]}$ permite extrair múltiplos elementos de um objeto, e retornar um novo objeto de mesma classe.
+
+- O operador $\color{red}{[[~~]]}$  permite extrair elementos de objetos do tipo lista ou data frames. A classe do objeto extraído não será, necessarriamente, uma lista ou data frame.
+
+- O operador $\color{red}{\$}$ permite extrair componentes nomeados de uma lista ou data frame.
+
+
+## Indexação de vetores
+
+### Extrair, excluir e substituir
+
+Para extrair, excluir ou substituir elementos no objeto-vetor usa-se o comando $\color{red}{[ \color{black}{i} ]}$. Onde o índice **i** indica a posição do elemento no objeto. O indice **i** inicia no valor **1**. A função $\color{magenta}{\textbf{c()}}$ pode ser usada para concatenar as posições desejadas dentro de colchetes.
+
+
+**a) Extração por indexação positiva**: especifica (entre colchetes) os elementos a serem extraídos.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+especie <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe")
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+
+# Extraindo elementos (usando valores inteiros)
+especie[2]                               # Um elemento.
+
+diametro[1:3]                            # Múltiplos elementos (sequenciais).
+
+especie[c(1,3,5)]                        # Múltiplos elementos (alternados).
+
+diametro[seq(from = 1, to = 5, by = 2)]  # Múltiplos elementos usando seq ().
+```
+
+
+**b) Extração por indexação negativa**: especifica (entre colchetes) os elementos a serem excluídos, retornando os demais. Deve-se usar o sinal negativo ($\color{red}{-}$) para indicar o desejo de excluir um ou mais elementos do objeto-vetor $\color{red}{[ \color{black}{-i} ]}$.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Excluindo elementos (usando valores inteiros)
+especie[-2]                             # Um elemento.
+
+diametro[-(1:3)]                        # Múltiplos elementos (sequenciais).
+
+especie[-c(1,3,5)]                      # Múltiplos elementos (alternados).
+```
+
+**c) Extração por indexação de strings** (vetores nomeados): Este mecanismo apenas é possível quando o objeto-vetor possui um atributo de nomes para identificar seus elementos. Pode-se usar a função $\color{magenta}{\textbf{names()}}$ para atribuír nomes (rótulos) para cada elemento do objeto-vetor. A vantagem disso é **facilidade de identificação dos elementos** do objeto-vetor.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Cria o vetor "altura"
+altura <- c(1.52, 1.83, 1.74, 1.67, 1.98)
+names(altura)
+
+# Atribuindo nomes (labels) aos elementos do objeto-vetor
+names(altura) <- c("João", "Maria", "José", "Pedro", "Tomé") 
+names(altura)
+
+# Extraindo elementos (usando nomes)
+altura[c("Maria", "José")]    # Altura de pessoas específicas?
+
+```
+
+
+**d) Extração por indexação lógica**: A extração de elementos no objeto-vetor pode ser feita com uso de **operadores lógicos**.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+Especie <- c(NA, "Araucaria", "Mogno", "Cedro", "Ipe",
+             "Tauari", "Jatoba", "Araucaria", "Acapu", NA)
+Diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1,
+              65.8, 79.6, 45.2, 50.0, 89.8)
+
+# Extrai árvores que não sejam Araucaria
+Especie[Especie != "Araucaria"]                      
+
+# Diâmetros > 50cm.
+Diametro[Diametro >= 50]                             
+```
+
+
+**e) Substituição por indexação**: Algumas vezes o interesse é substituir um ou mais elemento do objeto-vetor por outro.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+Especie <- c(NA, "Araucaria", "Mogno", "Cedro", "Ipe", NA)
+Diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+
+# Substitui os NAs
+is.na(Especie)
+Especie[is.na(Especie)] <- "Não Identificada"
+print(Especie)
+
+# Altera o diâmetro da posição 3, e atribui 33,5cm.
+Diametro[3] <- 33.5
+
+# Altera os diâmetros das posições 4 e 5, e atribui 55,3cm e 63,4cm
+Diametro[c(4, 5)] <- c(55.3, 63.4)
+```
+
+
+### Comando especiais para vetores
+
+
+**Função** $\color{magenta}{\textbf{which()}}$: Qual?
+
+$\color{magenta}{which(\color{black}{x~=~?,~arr.ind~=~FALSE,~useNames~=~TRUE})}$
+
+
+A função $\color{magenta}{\textbf{which()}}$ recebe e avalia **expressões lógicas** (objeto-vetor lógico) e, fornece a posição dos elementos em que a expressão lógica é verdadeira (TRUE). Os **NAs** são admitidos pela função, porém são tratados como FALSE.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+alfa <- LETTERS
+Especie <- c(NA, "Araucaria", "Mogno", "Cedro", "Ipe",
+             "Tauari", "Jatoba", "Araucaria", "Acapu", NA)
+Diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1,
+              65.8, 79.6, 45.2, 50.0, 89.8)
+
+which(alfa == "H")                    # posição da letra "H" no alfabeto
+
+which(Especie == "Mogno")             # posição do "Mogno"
+
+which(Diametro >= 50 | Diametro < 25) # posição de árvores com 50 <= d < 25
+```
+
+**Função** $\color{magenta}{\textbf{which.min()}}$: Qual posição do valor mínimo?
+
+**Função** $\color{magenta}{\textbf{which.max()}}$: Qual posição do valor máximo?
+
+**Função** $\color{magenta}{\textbf{unique()}}$: Recebe um objeto-vetor e, retorna um vetor sem repetições.
+
+```{r , eval=TRUE, collapse=TRUE }
+which.max(Diametro)
+
+which.min(Diametro)
+
+unique(Especie)
+```
+
+**Comando** $\color{red}{\textbf{%in%}}$
+
+É um operador binário, que retorna um **vetor boleano** (lógico) de tamanho sempre igual ao vetor-esquerdo com indicativo das correspondências verdadeiras (**TRUE**).
+
+```{r , eval=TRUE, collapse=TRUE }
+Esp.1 <- c("Acapu", "Araucaria", "Mogno", "Cedro", "Tauari")
+Esp.2 <- c("Angelim", "Araucaria", "Tauari")
+Diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1)
+
+# vetor direito está contido no esquerdo?
+Esp.1 %in% c("Mogno", "Cedro")    
+Esp.1 %in% Esp.2
+Esp.2 %in% Esp.1
+```
+
+## Indexação de matrizes
+
+### Extrair, excluir e substituir
+
+Para extrair, excluir ou substituir elementos de uma matriz usa-se o comando $\color{red}{[ \color{black}{i, j} ]}$. Onde o índice **i** indica linhas e **j** indica as colunas da matriz. 
+
+- Se o argumento for do tipo $\color{red}{[ \color{black}{i,~} ]}$ ter-se-á acesso a todos os elementos da linha **i** especificada.
+
+- Se o argumento for do tipo $\color{red}{[ \color{black}{,~j} ]}$ ter-se-á acesso a todos os elementos da coluna **j** especificada. 
+
+- Se nem o número linha e nem o número da coluna é informado: $\color{red}{[ \color{black}{~,~} ]}$. A matriz é acessada por completa.
+
+Por exemplo, em uma matriz **x** o elemento situado na $1ª$ linha da $1ª$ coluna pode ser representado por $x_{11}$, e pode ser acessado fazendo: $\color{red}{x[ \color{black}{1, 1} ]}$
+
+
+**Matriz 3x3**
+$\begin{bmatrix}x_{11}&x_{12}&x_{13}\\x_{21}&x_{22}&x_{23}\\x_{31}&x_{32}&x_{33}\end{bmatrix}$
+
+
+**a) Extraindo elementos**: Usa-se indexação positiva.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+mat <- matrix(1:6, nrow=2, ncol=3, byrow = TRUE, 
+              dimnames = list(c("L1", "L2"), 
+                              c("C1", "C2", "C3")))
+# Extraindo elementos
+mat[2,2]                      # elemento da linha 2 e coluna 2.
+
+mat[2, ]                      # todos elementos da linha 2.
+
+mat[, 3]                      # todos elementos da coluna 3.
+
+mat[c(1,2), c(2,3)]           # elementos de L1 e L2, e C2 e C3.
+```
+
+
+**b) Excluindo elementos**: Usa-se indexação negativa.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+mat <- matrix(1:6, nrow=2, ncol=3, byrow = TRUE, 
+              dimnames = list(c("L1", "L2"), 
+                              c("C1", "C2", "C3")))
+print(mat)
+
+# Excluindo elementos
+mat[,c(-1,-3)]                # exclui as colunas 1 e 3.
+
+mat[-2,-1]                    # exclui a linha 2 e a coluna 1.
+```
+
+
+**c) Substituindo elementos**
+
+
+```{r , eval=TRUE, collapse=TRUE }
+mat <- matrix(1:6, nrow=2, ncol=3, byrow = TRUE, 
+              dimnames = list(c("L1", "L2"), 
+                              c("C1", "C2", "C3")))
+print(mat)
+
+# substitui o elemento da posição 1, por zero.
+mat[1, 1] <- 0
+print(mat)   
+
+# substitui os elementos das posiçoes 1 e 5, por zero.
+# Obs.: observe a forma de contagem das posições!
+mat[c(1,5)] <- c(0,0)
+print(mat)  
+```
+
+
+## Indexação de data frames
+
+
+### Extrair, excluir, substituir
+
+
+O acesso a um determinado vetor em um data frame pode ser realizado utilizando-se do comando $\color{red}{[~\color{black}{ }~]}$ (similar às matrizes) ou dos comandos  $\color{red}{[[~ \color{black}{ }~]]}$ e $\color{red}{\$}$ (similar às listas). As funções $\color{magenta}{\textbf{attach()}}$ (attachment) e $\color{magenta}{\textbf{with()}}$ podem ser usadas para facilitar o acesso a esses vetores.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+invFlor.2 <- data.frame(
+  especie = c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe"), 
+  diametro = c(23.0, 27.0, 33.6, 42.6, 52.1),
+  altura = c(8.4, 8.7, 9.1, 13.2, 15.4),
+  cortar = c("Não", "Não", "Não", "Não", "Sim"),
+  stringsAsFactors = TRUE)
+
+print(invFlor.2)
+```
+
+
+**Comandos** $\color{red}{[~~]}$ e $\color{red}{[[~~]]}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+invFlor.2[2,1]                                    # similar as matrizes
+
+invFlor.2[[2,1]]                                  # similar as listas
+
+invFlor.2[, c(1,2,4), drop=FALSE]                 # drop = FALSE
+
+invFlor.2[c(1,2), c("especie","diametro")]        # mais específico
+```
+
+
+**Comando** $\color{red}{\$}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+invFlor.2$diametro              # acessa a coluna diâmetro.
+
+invFlor.2$cortar                # acessa a coluna cortar.
+
+# acessa a coluna cortar e extrai os elementos da posição 4 e 5.
+invFlor.2$cortar[c(4,5)]        
+```
+
+
+**Usando operadores lógicos**
+
+Os operadores lógicos podem ser usados para extrair informações específicas do data frame. Inicialmente, observar-se-á o retorno boleano (**TRUE** ou **FALSE**):
+
+```{r , eval=TRUE, collapse=TRUE }
+# Quais valores de altura são maiores do que 10m?
+invFlor.2$altura > 10
+
+# Quais valores de diâmetro são maiores ou iguais a 50cm?
+invFlor.2$diametro >= 50
+
+# Quais árvores possuem “Sim” para “Corte”?
+invFlor.2$cortar == "Sim"
+```
+
+No entanto, na maioria das vezes deseja-se extrair os elementos:
+
+```{r , eval=TRUE, collapse=TRUE }
+# Quais valores de altura são maiores do que 10m?
+invFlor.2[invFlor.2$altura > 10, ]
+
+# Quais valores de diâmetro são maiores ou iguais a 50cm?
+invFlor.2[invFlor.2$diametro >= 50,]
+
+# Quais árvores possuem “Sim” para “Corte”?
+invFlor.2[invFlor.2$cortar == "Sim",]
+
+# Extrai árvores com diâmetros < 50cm e não disponíveis p/ corte
+invFlor.2[invFlor.2$diametro < 50 & invFlor.2$cortar == "Não", ]
+```
+
+### Adicionar colunas e linhas
+
+
+**Adicionando colunas ao DF**
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Adicionando a coluna “Protegida”
+protegida <-  c("Sim", "Sim", "Sim", "Não", "Não")
+invFlor.2$protegida <- protegida
+print(invFlor.2)
+```
+
+
+**Adicionando linhas ao DF**
+
+
+Para adicionar linhas a um data frame há uma restrição: "não é possível adicionar novos níveis de fator para vetores da classe **factor**. Para exemplificar, tentar-se-á inserir o seguinte vetor-linha: ("Castanha", 150.9, 25.6, "Não", "Sim") na linha 1. No entanto, antes estudaremos alguns pontos:
+
+**1)** A coluna "espécie" pertence a classe **factor** e, originalmente, **não possui** o nível de fator "Castanha"; e
+**2)** A coluna "cortar" pertence a classe **factor** e, originalmente, **já possui** o nível de fator "Não".
+
+**O que aconteceu?**
+
+Aparecerá uma **mensagem de erro** atestando que o nível de fator “Castanha” é inválido. Isto porque, a espécie $\color{red}{Castanha}$ não existe no data frame original, sendo considerada um novo nível de fator. Assim, **NA** será impresso no lugar do nome da $\color{red}{Castanha}$. 
+
+Idealmente, para evitar problemas deste tipo, pode-se manter todas as colunas qualitativas como **character**. Para tanto, deve-se usar o argumento **stringsAsFactors = FALSE**.
+
+```{r , eval=TRUE, collapse=TRUE }
+str(invFlor.2)
+
+invFlor.2[1,] <- c("Castanha", 150.9, 25.6, "Não", "Sim")
+print(invFlor.2)
+
+invFlor.2$especie <- as.character(invFlor.2$especie)
+
+invFlor.2[1,] <- c("Castanha", 150.9, 25.6, "Não", "Sim")
+
+print(invFlor.2)
+```
+
+### Funções $\color{magenta}{\textbf{attach()}}$, $\color{magenta}{\textbf{detach()}}$ e $\color{magenta}{\textbf{with()}}$ 
+
+
+**Função** $\color{magenta}{\textbf{attach()}}$
+
+A função $\color{magenta}{\textbf{attach()}}$ oferece acesso direto aos vetores do data frame. Para finalizar seu uso deve-se utilizar a função $\color{magenta}{\textbf{detach()}}$.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+attach(invFlor.2)
+diametro              # acessa direto ao diâmetro.
+
+cortar                # acessa direto a coluna cortar.
+detach(invFlor.2)
+```
+
+
+**Função** $\color{magenta}{\textbf{with()}}$
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# acessa coluna especie
+with(invFlor.2, especie)
+
+# acessa elementos específicos na coluna
+with(invFlor.2, especie[4:5])   
+
+# pode-se usar para aplicar funções
+with(invFlor.2, mean(altura))
+
+```
+
+### Função $\color{magenta}{\textbf{subset()}}$
+
+**Função** $\color{magenta}{\textbf{subset()}}$: Extrai um subconjunto de vetores, matrizes e **data frames** que atendem às condições.
+
+A função $\color{magenta}{\textbf{subset()}}$ também pode ser usada para extrair elementos de um data frame usando de operadores lógicos. Para estudar a função usar-se-á do famoso conjunto de dados de flores de iris (**iris data set**). O conjunto de dados é composto de **150 observações** (instâncias) e **5 variáveis** (**Sepal.Length**, **Sepal.Width**, **Petal.Length** e **Petal.Width**, **Species**), de 50 flores de cada espécie de íris (**Iris setosa**, **Iris versicolor** e **Iris virginica**).
+
+
+```{r , eval=TRUE, collapse=TRUE }
+data("iris")
+head(iris)
+tail(iris)
+str(iris)
+dim(iris)
+```
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# flores com Sepal.Length > 7.5, mantendo as colunas Species e Sepal.Length.
+subset(iris, Sepal.Length > 7.5, select = c(Species, Sepal.Length))
+
+# flores de setosa com Sepal.Width < 3, mantendo as colunas 
+# Species e Sepal.Width.
+subset(iris, Species == "setosa" & Sepal.Width < 3, 
+       select = c(Species, Sepal.Width))
+```
+
+
+### Função $\color{magenta}{\textbf{split()}}$
+
+A divisão de data frames pode ser realizada por meio da função $\color{magenta}{\textbf{split()}}$. Para tanto, sirva-se de dois argumentos básicos: i) data frame que se almeja dividir; ii) fator a ser considerado para a divisão.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+protegida <- split(invFlor.2,invFlor.2$protegida)
+
+print(protegida)
+```
+
+
+## Indexação de listas
+
+A indexação de lista pode ser feita com uso dos comando $\color{red}{[[~~]]}$ e $\color{red}{\$}$. Ainda, para acessar subíndices dos componentes da lista pode-se fazer: $\color{red}{[[~~]][~~]}$. Para exemplificar, considere a lista **list.2** que contém 3 componentes (**vetor, matriz e DF**):
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# Uma lista cujos componentes não estão nomeados
+list.2 <- list(diametro, mat.8, invFlor.1)
+
+print(list.2)
+
+list.2[[1]]             
+
+list.2[[2]][1,]         
+
+list.2[[3]][diametro > 50 & cortar == "Sim", ]
+
+```
+
+
+Se a lista tiver seus componente nomeados o acesso é facilitado pelo uso do comando $\color{red}{\$}$:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+list.2 <- list(diametro=diametro, matriz=mat.8, DF=invFlor.1)
+
+print(list.2)
+
+list.2$diametro           
+
+list.2$matriz[1,]
+
+list.2$DF[diametro > 50 & cortar == "Sim", ]
+```
+
+
+**Substituindo elementos de componentes da lista**
+
+
+```{r , eval=TRUE, collapse=TRUE }
+# substitui por 50 e 60 no diâmetro
+list.2$diametro[c(3,5)] <- c(50, 60)
+
+print(list.2)
+```
+
+
+**Excluindo componentes da lista**
+
+
+```{r , eval=TRUE, collapse=TRUE }
+list.2$DF <- NULL          # excluindo todo componente DF
+print(list.2)
+
+# excluindo colunas 2 e 3 do componente matriz
+list.2$matriz <- list.2$matriz[,-c(2,3)]
+print(list.2)
+```
+
+
+# Criando funções no R
+
+
+O ambiente R possui muitas funções **interativas** e **prontas** disponíveis em inúmeros pacotes, para o uso fácil e prático pelos usuários. Não obstante, em algumas situações pode-se desejar criar a própria função. Para tanto, deve-se utilizar a função $\color{magenta}{function() \color{blue}{\{~\}}}$ disponível no R-base [@R-base]. Entre parênteses devem ser inseridos os argumento(s) da função, sobre os quais irá trabalhar o **código** descrito entre chaves $\color{blue}{\{~\}}$. Opcionalmente, no escopo da função pode-se usar a função $\color{magenta}{return()}$, e especificar entre os parênteses a(s) saída(s) desejada(s) ao se aplicar a função.
+
+
+$\textbf{Sintaxe}$
+
+$\color{magenta}{function(\color{black}{arglist~=~arg1,~arg2~,~...,~argn})}$ $\color{blue}{\{}$
+
+$\color{black}{expr}$
+
+$\color{magenta}{return(\color{black}{value})}$
+
+$\color{blue}{\}}$
+
+
+$\color{black}{\textbf{arglist}}$ = um argumento ou lista de argumentos sobre o(s) qual(is) irá atuar o código **expr**;
+
+$\color{black}{\textbf{expr}}$ = uma expressão ou código a ser usado sobre os argumentos da função;
+
+$\color{black}{\textbf{return}}$ = função que específica o retorno da função; e
+
+$\color{black}{\textbf{value}}$ = uma expressão que representa a saída desejada.
+
+
+**1.** Criando uma função para obter a $\color{red}{\textbf{média aritmética}}$ de um vetor **x** qualquer:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+Media <- function(x){
+  n = length(x)
+  Soma=sum(x)
+  Media=Soma/n
+  
+  return(Media)                                
+}
+```
+
+Dado um objeto-vetor de diâmetros de árvores pode-se calcular a média usando a função:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+diametro <- c(23.4, 54.3, 45.1, 67.1, 34.7)
+Media(diametro)          
+```
+
+
+**2.** Criando uma função para obter o $\color{red}{\textbf{coeficiente de variação}}$ de um vetor **x** qualquer:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+CV <- function(x){
+  Media = sum(x)/length(x)
+  DP = sqrt(sum((x-mean(x))^2)/(length(x)-1))
+  CV = (DP/Media)*100
+  
+  return(CV)                                                                            
+}
+```
+
+
+Para o mesmo vetor de diâmetros de árvores pode-se calcular o CV:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+CV(diametro)          
+```
+
+
+**3.** Criando uma função para obter várias $\color{red}{\textbf{estatísticas descritivas}}$:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+descritivas.1 <-
+  function(x){
+  n <- length(x)
+  Soma <- sum(x)
+  Media <- round(sum(x)/n, digits=2)
+  Variancia <- var(x)
+  DP <- round(sd(x), digits=2)
+  CV <- round((DP/Media)*100,digits=2)
+  Minimo <- min(x)
+  Quartil1 <- quantile(x,0.25)
+  Mediana <- median(x)
+  Quartil3 <- quantile(x,0.75)
+  Interquatil <- Quartil3-Quartil1
+  Maximo <- max(x)
+  
+  return(list(n=n,Media=Media,DP=DP,CV=CV,Min=Minimo,
+              Q1=Quartil1,Md=Mediana,Q3=Quartil3,
+              Interquatil=Interquatil,Max=Maximo))
+}
+```
+
+Considerando o conjunto de dados **trees** pode-se aplicar, por exemplo, a função para obter as estatísticas descritivas para a variável **volume**. O parâmetro **x** da função recebe o vetor **volume** no argumento **x** e, retorna uma lista com as estatísticas descritivas. Para obter as mesmas estatísticas deve-se aplicar a função a cada variável de interesse, individualmente.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+descritivas.1(trees$Volume)
+```
+
+
+Mas, seria possível criar uma função para retornar várias estatísticas para diversas variáveis simultâneamente? Agora, é apresentada uma função que faz exatamente isso. Assim, pode-se usar uma $\color{magenta}{function() \color{blue}{\{~\}}}$ no argumento **FUN** da função $\color{magenta}{\textbf{apply()}}$. Além disso, **MARGIN** é definida com inteiro igual a **2**, para que a função em **FUN** seja aplicada às colunas do data frame.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+descritivas.2 <- 
+  apply(trees,MARGIN = 2, FUN = 
+          function(x){
+            n <- length(x)
+            Soma <- sum(x)
+            Media <- round(sum(x)/n, digits=2)
+            Variancia <- var(x)
+            DP <- round(sd(x), digits=2)
+            CV <- round((DP/Media)*100,digits=2)
+            Minimo <- min(x)
+            Quartil1 <- quantile(x,0.25)
+            Mediana <- median(x)
+            Quartil3 <- quantile(x,0.75)
+            Interquatil <- Quartil3-Quartil1
+            Maximo <- max(x)
+            
+            return(list(n=n,Media=Media,DP=DP,CV=CV,Min=Minimo,
+                        Q1=Quartil1,Md=Mediana,Q3=Quartil3,
+                        Interquatil=Interquatil,Max=Maximo))
+})
+
+descritivas.2
+```
+
+
+Pode-se melhorar a saída das estatísticas:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+do.call(rbind, descritivas.2)
+```
+
+
+# Estruturas de controle
+
+## Instrução condicional
+
+### Comandos $\color{magenta}{\textbf{if}}$, $\color{magenta}{\textbf{if-else}}$ e $\color{magenta}{\textbf{if-elseif-else}}$
+
+
+De modo geral, pode-se identificar três principais variações de instruções condicionais, isto é, $\color{magenta}{if}$, $\color{magenta}{if-else}$ e $\color{magenta}{if-elseif-else}$. A estrutura $\color{magenta}{if() \color{blue}{\{~\}}}$ condiciona a execução de uma lista de instruções (código) em função de uma condição booleana (verdadeira ou falsa). Assim, a aplicação da condicional $\color{magenta}{function() \color{blue}{\{~\}}}$ requer duas argumentações básicas: a) a condição a ser satisfeita, descrita entre parênteses; e b) uma ou mais instrução(ões), expressas entre chaves $\color{blue}{\{~\}}$, que deverão ser executadas caso a condição booleana seja verdadeira. Para mais informações faça \?**if**. 
+
+Alternativamente, a condição $\color{magenta}{if()}$ pode ser usada em conjunto com $\color{magenta}{else \color{blue}{\{~\}}}$. Neste caso, tem-se a seguinte estrutura: $\color{magenta}{if(~)\color{blue}{\{~\}}} \color{magenta}{else}\color{blue}{\{~\}}$. Assim, a condição será examinada a cada passagem pela estrutura $\color{magenta}{if()}$, caso seja satisfeita (**VERDADEIRA**) a lista de instruções entre chaves será executada. Do contrário, se for **FALSA**, será executado o código atribuído ao comando $\color{magenta}{else\color{blue}{\{~\}}}$. A instrução $\color{magenta}{if(~)\color{blue}{\{~\}}} \color{magenta}{elseif()}\color{blue}{\{~\}}\color{magenta}{else}\color{blue}{\{~\}}$ é outra variação da estrutura condicional $\color{magenta}{if()}$, sendo usada quando se deseja executar mais de uma condicional através de instruções aninhadas. Deve-se atentar para o cuidado de saber a qual $\color{magenta}{if()}$ está atrelado cada $\color{magenta}{else\color{blue}{\{\}}}$.
+
+**Como usar a instrução condicional?**
+
+```{r echo=FALSE, dpi=600, out.width='900pt', out.height='700pt'}
+knitr::include_graphics("ifelse.jpg",  dpi = 600)
+```
+
+
+**Uso da instrução** $\color{magenta}{if() \color{blue}{\{~\}}}$
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- 9
+if (x < 10){                 # Se =  "x" < 10    
+  print(x)                   # Imprima = "x"
+  print("É menor do que 10") # Faça = imprima "É menor do que 10"
+}                            # fim Se
+```
+
+
+**Uso da instrução** $\color{magenta}{if(~)\color{blue}{\{~\}}} \color{magenta}{else}\color{blue}{\{~\}}$
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- 11
+if (x <= 10){                     # Se =  "x" <= 10
+  cat("É menor ou igual a 10")    # Imprima = "É menor ou igual a 10"
+}else{                            # do contrário
+  cat("É maior do que 10")        # Imprima = "É maior do que 10"
+}                                 # fim Se
+```
+
+
+**Uso da instrução** $\color{magenta}{if(~)\color{blue}{\{~\}}} \color{magenta}{elseif()}\color{blue}{\{~\}}\color{magenta}{else}\color{blue}{\{~\}}$ - ifs aninhados
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- 9
+if (x == 10){                     # Se =  "x" == 10
+  print("É igual a 10")           # Imprima = "É igual a 10"
+} else if (x > 10) {              # Se =  "x" > 10
+  print("É maior do que 10")      # Imprima = "É maior do que 10"
+} else {                          # do contrário
+  print("É menor do que 10")      # Imprima = "É menor do que 10"
+}                                 # fim Se
+```
+
+As instruções condicionais podem ser usadas dentro de funções:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+dap1 <- 64
+dap2 <- 43
+
+categoria <- function (x)
+if (x >= 50){
+  print(paste("Cortar =", x))
+} else {
+  print(paste("Protegida =", x))
+}
+
+categoria(dap1)
+categoria(dap2)
+```
+
+
+Em outras situações, pode-se requerer usar alguma das 3 variações de instrução condicional a um vetor numérico, porém ocorrerá uma menasagem de erro alertando que a condição do $\color{magenta}{if()}$ tem comprimento maior do que **1**, e somente o primeiro elemento do vetor será considerado para execução do código. Isto é, o uso das variações $\color{magenta}{if()}$ está condicionado a vetores de comprimento igual a um, não podendo ser um **NA**. Para fns ilustrativos, a seguir criou-se um vetor **x** qualquer com seis elementos e, em seguida foi elaborada uma estrutura condicional com a seguinte condição booleana **if(x == 10)**, que se verdadeira retorna **É igual a 10**. De fato, o desejável seria que a condição booleana fosse avaliada para cada elemento do vetor **x**, porém isso não acontece. Ao executar o comando surge uma mensagem de erro informando que a condição tem comprimento maior do que **1** e somente o primeiro elemento do vetor **x** será usado, ou seja, a condição booleana foi avaliada apenas para o **número 10**, cujo retorno é **É igual a 10**. Assim, caso a intenção seja aplicar uma condicional a um vetor de comprimento maior do que **1** deve-se utilizar da função $\color{magenta}{ifelse()}$.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- c(10, 9, 8, 10, 15, 16)
+if (x == 10){
+  print("É igual a 10")
+}else{
+  print("Não é igual a 10")
+}
+```
+
+
+### Comando $\color{magenta}{\textbf{ifelse()}}$
+
+Quando o interesse é operar sobre vetores de **comprimento maior do que 1**, a alternativa é usar a função vetorizada $\color{magenta}{ifelse()}$. Assim, a condição booleana opera sobre cada elemento do vetor:
+
+
+$\textbf{Sintaxe}$
+
+$\color{magenta}{ifelse(\color{black}{test~=~?,~yes~=~?,~no~=~?})}$
+
+$\color{black}{\textbf{test}}$ = um objeto que pode ser coagido para o modo lógico;
+
+$\color{black}{\textbf{yes}}$ = instrução a ser retornada quando a condição for VERDADEIRA; e
+
+$\color{black}{\textbf{no}}$ = instrução a ser executada quando a condição for FALSA.
+
+
+Retornando, ao exemplo do vetor numérico **x** será usada a função $\color{magenta}{ifelse()}$:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- c(10, 9, 8, 10, 15, 16)
+ifelse(test=(x == 10), yes="É igual a 10", no="Não é igual a 10")
+```
+
+O exemplo a seguir simula uma situação de análise de um censo florestal para fins de licenciamento de **Plano de Manejo Florestal Sustentável (PMFS)**. A ideia é identificar as árvores passíveis de exploração legal, considerando apenas dois critérios: 
+
+**a)** o atendimento ao diâmetro mínimo de corte ($\color{red}{DMC}$ $\geq$ $\color{red}{50~cm}$) (BRASIL, 2009); e 
+
+**b)** se a espécie é $\color{red}{protegida~por~lei}$. Agora ao invés de um simples vetor tem-se um data frame com quatro variáveis.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+invFlor.3 <- data.frame(
+  especie = c("Acapu", "Araucaria", "Mogno", "Cedro", "Ipe"), 
+  diametro = c(23.0, 27.0, 33.6, 42.6, 52.1),
+  altura = c(8.4, 8.7, 9.1, 13.2, 15.4),
+  protegida = c("Sim", "Sim", "Sim", "Não", "Não"),
+  stringsAsFactors = FALSE)
+
+# solução
+ifelse(test=(invFlor.3$diametro >= 50 & invFlor.3$protegida == "Não"), 
+       yes="Pode Explorar", no="Não Pode Explorar")
+```
+
+## Estruturas de repetição
+
+Em algumas situações você pode se deparar com a necessidade de executar um mesmo código ou parte de um código repetidamente, ou mesmo, até que uma determinada condição seja satisfeita. No entanto, reescrever um código várias vezes pode ser bastante trabalhoso e, em certas circunstâncias impraticável. Assim, pode-se usar de estruturas de controle de fluxo disponíveis no R-base. Tais estruturas possibilitam ao usuário executar repetidas vezes algum trecho ou o código inteiro de um algoritmo, sob ou não determina(s) condição(ões). Para tanto, cria-se **looping** (laços de repetição) para que a repetição seja executada tantas vezes quanto forem necessárias. Os principais comandos de controle de fluxo no R são: i) $\color{magenta}{while}$ (**enquanto**); ii) $\color{magenta}{for}$ (**para**); e iii) $\color{magenta}{repeat}$ (**repita**). Para saber mais sobre controle de fluxo no R digite: **?Control**.
+
+### Comando $\color{magenta}{\textbf{while()}}$
+
+O comando $\color{magenta}{while}$ (**enquanto**) é uma estrutura de controle de fluxo no R que tem a seguinte estrutura: $\color{magenta}{while(~)\color{blue}{\{~\}}}$. O comando inicia com a inserção de uma **condição booleana** entre parênteses. Em seguida, o **código** é descrito **entre chaves**, o qual será executado repetidamente **ENQUANTO** a condição booleana for **VERDADEIRA**.
+
+
+```{r echo=FALSE, dpi=600, out.width='800pt', out.height='150pt'}
+knitr::include_graphics("while.jpg",  dpi = 600)
+```
+
+
+**Aplicando o comando** $\color{magenta}{while(~)\color{blue}{\{~\}}}$
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- 2          # um escalar "x" (valor inicial das sucessivas iterações),
+while(x < 10){  # enquanto = "x" for < 10 (condição booleana),
+  x <- x+2      # faça = x+2 enquanto a condição x < 10 seja verdadeira,
+  print(x)      # imprima = reporte os resultados das iterações de x+2,
+}               # fim Enquanto
+```
+
+
+Entendendo as iterações:
+
+
+```{r echo=FALSE, dpi=600, out.width='800pt', out.height='200pt'}
+knitr::include_graphics("whileEnt.jpg",  dpi = 600)
+```
+
+
+Pulando um laço do loop $\color{magenta}{while(~)\color{blue}{\{~\}}}$ – Usando o argumento **next** na condicional $\color{magenta}{if(~)\color{blue}{\{~\}}}$:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- 2           # um escalar "x" (valor inicial das sucessivas iterações),
+while(x < 10){   # enquanto = "x" for < 10 (condição booleana),
+  x <- x+2       # faça = x+2 enquanto a condição x < 10 seja verdadeira,
+  if(x==8){next} # se, próximo = pule o laço se x == 8, ainda sim faça x+2,
+  print(x)       # imprima = reporte os resultados das iterações de x+2,
+}                # fim Enquanto
+```
+
+
+Entendendo as iterações:
+
+
+```{r echo=FALSE, dpi=600, out.width='900pt', out.height='200pt'}
+knitr::include_graphics("whileEnt2.jpg",  dpi = 600)
+```
+
+
+Quebrando um laço do loop $\color{magenta}{while(~)\color{blue}{\{~\}}}$ – Usando o argumento **break** na condicional $\color{magenta}{if(~)\color{blue}{\{~\}}}$:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- 2            # um escalar "x" (valor inicial das sucessivas iterações),
+while(x < 10){    # enquanto = "x" for < 10 (condição booleana),
+  if(x==8){break} # se, quebre = Pare de executar x+2, se x == 8,
+  x <- x+2        # faça = x+2 enquanto x < 10 e, se x == 8 seja verdade,
+  print(x)        # imprima = reporte os resultados das iterações de x+2,
+}                 # fim Enquanto
+```
+
+Entendendo as iterações:
+
+
+```{r echo=FALSE, dpi=600, out.width='900pt', out.height='200pt'}
+knitr::include_graphics("whileEnt3.jpg",  dpi = 600)
+```
+
+
+### Comando $\color{magenta}{\textbf{for()}}$
+
+O comando $\color{magenta}{for()}$ (**para**) é uma estrutura de controle de fluxo no R, que $\color{magenta}{for()}$ inicia com a especificação, entre parênteses, do nome da variável de iteração e do vetor ou lista de elementos. Em seguida, entre chaves descreve-se o bloco de códigos que será executado a cada iteração (loop).
+
+
+$\textbf{Sintaxe}$
+
+$\color{magenta}{for(variavel~in~sequencia)\color{blue}{\{codigo\}}}$
+
+
+$\color{black}{\textbf{variável}}$ = nome da variável de iteração;
+
+$\color{black}{\textbf{sequência}}$ = vetor ou lista de valores com **i** elementos; e
+
+$\color{black}{\textbf{código}}$ = código a ser repetido sob cada elemento **i** da sequência, a cada iteração.
+
+O pacote **magicfor** [@R-magicfor] dispõe de funções interessantes para armazenar os resultados das iterações dos loops $\color{magenta}{for()}$. A seguir a implementação de um loop e criação de um data frame com a função $\color{magenta}{magic\_result\_as\_dataframe()}$. No data frame é adicionada a variável de iteração $i$ e os resultados da operação $i^3$:
+
+
+```{r, eval=T, echo=FALSE, warning=FALSE}
+library(magicfor)                      # load library
+magic_for(func = print, silent = TRUE) # call magic_for()
+```
+
+```{r , eval=TRUE, collapse=TRUE}
+
+for(i in 1:4){              # para = cada elemento “i” do vetor 1:4,
+  cub <- i^3                # calcule: “i^3” e add ao objeto "cub",
+  print(cub)                # faça = imprima o objeto "cub",
+}                           # fim Para
+magic_result_as_dataframe() # um df com os resultados das iterações.
+```
+
+Entendendo as iterações:
+
+```{r echo=FALSE, dpi=600, out.width='500pt', out.height='200pt'}
+knitr::include_graphics("for.jpg",  dpi = 600)
+```
+
+
+O comando a seguir produz o mesmo efeito:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- c(1, 2, 3, 4)          # cria um vetor "x" para ser usado em seq,
+
+for(i in x){                # para = cada elemento “i” do vetor "x",
+  cub <- i^3                # calcule: “i^3” e add ao objeto "cub",
+  print(cub)                # faça = imprima o objeto "cub",
+}                           # fim Para
+magic_result_as_dataframe() # um df com os resultados das iterações.
+```
+
+
+Cria um vetor **x** a ser inserido em **seq** e imprime $i^3$ e $i*i$:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+x <- c(1, 2, 3, 4)          # cria um vetor "x" para ser usado em seq,
+
+for(i in x){                # para: cada elemento “i” do vetor "x",
+  cub <- i^3                # faça:calcule i^3 e add ao objeto "cub",
+  prod <- i*i               # faça: calcule i*i e add ao objeto "prod",
+  put(cub, prod)            # armazene: os valores da iteração,
+}                           # fim Para
+magic_result_as_dataframe() # um df com os resultados das iterações.
+```
+
+
+```{r, eval=TRUE, echo=FALSE}
+# Finaliza o pacote magicfor...
+magic_free()
+```
+
+
+Cria um vetor **x** vazio e atribui-se o resultado do produto ($i*i$) às posições **i** do vetor. É interessante observar o que acontece quando executa-se a função dentro e fora do comando. Para o exemplo, quando usada a função $\color{magenta}{print()}$ **dentro do loop** obtêm-se o retorno do vetor **x** após cada iteração **i**. Do contrário, imprimindo **fora do loop** obtêm-se apenas o vetor **x** final.
+
+
+```{r , eval=FALSE, collapse=TRUE, results='asis'}
+x <- numeric(0)       # cria um vetor numérico “x” vazio,
+
+for(i in 1:6){        # para: cada elemento "i" na seq. de 1 a 6,
+  x[i] <- i*i         # faça: calcule i*i e adicione ao vetor "x",
+  print(x)            # imprima = o vetor "x" ao fim de cada iteração,
+}                     # fim Para
+
+print(x)              # imprima o vetor "x" final.
+```
+
+
+Usando os elementos do vetor **x** para obter $i^2$, e adicionando os resultados ao vetor **y**:
+
+
+```{r , eval=FALSE, collapse=TRUE, results='asis'}
+x <- c(1, 2, 3, 4)    # cria: um vetor numérico “x” qualquer,
+y <- numeric(0)       # cria: um vetor numérico “y” vazio,
+
+for(i in x){          # para: cada elemento "i" em "x",
+  y[i] <- x[i]^2      # faça: calcule x[i]^2 e adicione ao vetor "y",
+  print(y)            # imprima: o vetor "y" ao fim de cada iteração,
+}                     # fim Para
+
+print(y)              # imprima: o vetor "y" final.
+```
+
+
+O mesmo resultado é alcançado usando-se a função $\color{magenta}{append()}$ bastando informar os parâmetros **x** (vetor que receberá os elementos de **values**) e **values** (valores que devem ser anexados ao vetor **x**).
+
+
+```{r , eval=FALSE, collapse=TRUE, results='asis'}
+y <- c()                    # cria: um vetor “y” vazio,
+for(i in 1:4){              # para: cada elemento "i" na seq. 1:4,
+  y <- append(x = y, 
+              values = i^2) # faça: calcule i^2 e anexe a "y",
+  print(y)                  # imprima: o vetor "y" ao fim de cada iteração,
+}                           # fim Para
+
+print(y)                    # imprima: o vetor "y" final.
+```
+
+
+Condicional $\color{magenta}{if(~)\color{blue}{\{~\}}}$ dentro do comando $\color{magenta}{for()}$ - para caso de vetores:
+
+
+```{r , eval=FALSE, collapse=TRUE}
+x <- c(10, 9, 15, 16)           # cria: um vetor numérico “x” qualquer,
+
+for(i in x){                    # para: cada elemento "i" em "x",
+  if (i == 10){                 # se: "i" for = 10,
+    print("É igual a 10")       # imprima: "É igual a 10",
+  }else{                        # do contrário,
+    print("É diferente de 10")  # imprima: "É diferente de 10",
+  }                             # fim Se
+}                               # fim Para
+```
+
+Aplicando loops aninhados (consecutivos) com o comando $\color{magenta}{for()}$. No exemplo, é criada uma matriz a partir do produto de duas sequências: (1,2,3) e (1,2), cujos elementos constituintes são representados por **i** e **j**, respectivamente. O resultado do produto é adicionado a uma matriz:
+
+
+```{r , eval=TRUE, collapse=TRUE, warning=FALSE}
+matrix <- matrix(nrow = 3, ncol = 2)
+
+for(i in 1:3){
+  for(j in 1:2){
+matrix[i,j] = i*j
+  }
+}
+matrix
+```
+
+
+# Gerando de amostras aleatórias
+
+## Função $\color{magenta}{\textbf{sample()}}$
+
+A função $\color{magenta}{sample(~)}$ permite gerar amostras aleatórias de um determinado vetor ou conjunto de dados, com ou sem reposição dos elementos sorteados. Ao usar a função $\color{magenta}{sample(~)}$ é necessário usar conjuntamente a função $\color{magenta}{set.seed(~)}$ para garantir a reprodutibilidade dos números aleatorizados. Caso não seja feito, a cada execução da função um novo conjunto de amostras aleatórias será gerado. Os principais argumentos: 
+
+
+$\textbf{Sintaxe}$
+
+
+$\color{magenta}{sample(\color{black}{x~=~?,~size~=~?,~replace~=~?,~prob~=~?})}$
+
+$\color{black}{\textbf{x}}$ = um vetor de um ou mais elementos de onde deverá ser retirada a amostra ou um inteiro positivo;
+
+$\color{black}{\textbf{size}}$ = número não negativo e inteiro, referente ao tamanho da amostragem a ser gerada;
+
+$\color{black}{\textbf{replace}}$ = argumento informando se a amostragem deve ser feita com reposição ou não. O default é FALSE (sem reposição); e
+
+$\color{black}{\textbf{prob}}$ = vetor de probabilidades para obtenção dos elementos do vetor **x** que será amostrado. O default é NULL.
+
+
+Usando a função $\color{magenta}{sample(~)}$
+
+**1.** Gerar uma amostra aleatória de 10 números inteiros, sem reposição, no intervalo de 0 e 100.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+set.seed(1)
+sample(x=0:100, size=10)
+```
+
+**2.** Gerar uma amostra aleatória de 15 números inteiros, sem reposição, do vetor **x**.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+set.seed(2)
+x <- seq(from=1, to=50, by=1)                                                               
+sample(x=x, size=15)
+```
+
+**3.** Gerar uma amostra aleatória de 5 números, com reposição, entre os possíveis resultados de lançamentos de um dado.
+
+
+```{r , eval=TRUE, collapse=TRUE }
+set.seed(3)
+sample(x=1:6, size=5, replace = TRUE)
+```
+
+
+**4.** Gerar uma amostra aleatória de 6 números, sem reposição, entre os possíveis resultados de lançamentos de um dado.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+set.seed(4)
+sample(x=1:6, size=6, replace = FALSE)
+```
+
+**5.** Gerar uma amostra aleatória, sem reposição, a partir do vetor de caractere de 6 espécies florestais.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+set.seed(5)
+Especie <- c("Acapu", "Angelim Pedra", "Timborana", "Maparajuba", 
+             "Ipê Amarelo", "Jatobá")
+sample(x=Especie, size=6, replace = FALSE)
+```
+
+
+**6.** **Gera um erro**: quando **replace** = FALSE, o tamanho da amostra (size) não pode ser maior do que a população em **x**.
+
+
+```{r , eval=FALSE, collapse=TRUE}
+set.seed(6)
+Especie <- c("Acapu", "Angelim Pedra", "Timborana", "Maparajuba", 
+             "Ipê Amarelo", "Jatobá")
+sample(x=Especie, size=7, replace = FALSE)
+```
+
+
+**7.** Gerar uma amostra aleatória de 50 diâmetros de árvores, com reposição, do vetor **diametro**.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+set.seed(7)
+diametro <- c(23.0, 27.0, 33.6, 42.6, 52.1, 63.2)
+sample(x=diametro, size=50, replace = TRUE)
+```
+
+
+**8.** Gerar uma amostra aleatória dos elementos de um data frame e, em seguida, separa em dados em treino e validação (procedimento comum em aprendizado de máquina). 
+
+
+Para fins didático, usar-se-á o conjunto de dados **trees** que contém informações de circunferência, altura e volume de 31 árvores de Cerejeira. Assim, a função $\color{magenta}{sample()}$ será escrita com a seguinte sintaxe:
+
+**x** = recebe os inteiros que representam os dois conjuntos de dados (1 e 2); 
+
+**size** = recebe o número de linhas (nrow) do conjunto de dados;
+
+**replace** = TRUE, atribui um 1 ou um 2 a uma determinada linha; e
+
+**prob** = recebe um vetor de probabilidade (0,7 e 0,3).
+
+Definindo-se **replace = TRUE** permite-se que a cada novo sorteio atribua-se **1 ou 2** as linhas do data.frame, até que o vetor de probabilidades de **0,7 e 0,3** sejam satisfeitos, ou fiquem próximo do desejado.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+set.seed(8)
+data("trees")
+str(trees)
+
+amostra.aleatoria <- sample(x=1:2, 
+                            size=nrow(trees), 
+                            replace=TRUE, 
+                            prob=c(0.7, 0.3))
+amostra.aleatoria
+table(amostra.aleatoria)
+round(prop.table(table(amostra.aleatoria)), digits = 2)
+```
+
+
+Ao imprimir o objeto **amostra.aleatoria** o sorteio realizado será evidenciado pelos números inteiros (1 e 2) definidos no argumento **x**. É possível perceber também a ação do argumento **prob** no processo de amostragem. Cada valor **1** e **2** receberá uma linha do conjunto de dados **trees**, seguindo a ordem sequencial de sua ocorrência no objeto **amostra.aleatoria**. Por exemplo, as árvores situadas nas linhas 3, 6, 8, 9, 16, 26 e 3 constituirão o conjunto de valiadação.
+
+
+```{r}
+which(amostra.aleatoria %in% 1)     #árvores da amostra de treino.
+which(amostra.aleatoria %in% 2)     #árvores da amostra de validação.
+```
+
+
+```{r , eval=TRUE, collapse=TRUE}
+treino <- trees[amostra.aleatoria==1,] 
+str(treino)
+
+validacao <- trees[amostra.aleatoria==2,] 
+str(validacao)
+```
+
+
+# Visualização gráfica no R
+
+```{r , eval=TRUE, collapse=TRUE }
+?par()
+```
+
+## Demonstrativo de gráficos no R
+
+```{r , eval=FALSE, collapse=TRUE }
+demo(graphics)
+```
+
+## Tipos de comandos:  alto ou baixo nível e interativos
+
+### Comandos de alto nível (criam gráficos completos)
+
+$\color{magenta}{plot()}$; $\color{magenta}{boxplot()}$; e $\color{magenta}{hist()}$.
+
+### Comandos de baixo nível (adicionam informações a algum gráfico já existente)
+
+$\color{magenta}{points()}$; $\color{magenta}{lines()}$; e $\color{magenta}{title()}$.
+
+### Comandos interativos (permitem que o usuário interaja com a janela gráfica)
+
+$\color{magenta}{identify()}$
+
+## A função $\color{magenta}{\textbf{plot()}}$
+
+É uma função genérica para plotagem de objetos R. Para saber mais detalhes sobre os argumentos dos parâmetros gráficos deve-se consulte o **par**. O uso da função $\color{magenta}{plot()}$ é um dos mecanismos mais simples para a criação dos gráficos no R. Para estudar alguns detalhes da função $\color{magenta}{plot()}$ usar-se-á de dados biométricos de **30 árvores** de um povoamento de $\color{red}{\textit{Tectona grandis}}$ situado nas coordenadas geográficas Latitude -03°16'10,96'' e Longitude -52°23'42,58'', no **Campo Experimental da Embrapa Amazônia Oriental**, km 23 da Rodovia BR 230 (Transamazônica), no município de Altamira, Mesorregião do Sudoeste Paraense. O plantio experimental foi conduzido sem tratamentos silviculturais (podas e desbastes), sob o espaçamento 3 x 2 m, perfazendo 3.276 m², com 546 indivíduos, com idades variando entre 5 e 14 anos. O volume do fuste $\color{red}{\textit{T. grandis}}$ pelo método de Huber.
+
+$\color{magenta}{plot(\color{black}{x,~y,~type~=~"",~main~=~"",~sub~=~"",~xlab~=~"",~ylab~=~"",~asp~=~""})}$
+
+```{r, warning=FALSE, echo=FALSE, eval=TRUE}
+library(data.table)
+```
+
+
+```{r, eval=TRUE, collapse=TRUE}
+teca <- fread("Tectona.csv")
+teca
+```
+
+
+Pode-se avaliar previamente o conjunto de dados utilizado:
+
+
+```{r , eval=TRUE, collapse=TRUE }
+str(teca)      # estrutura do conjunto de dados
+summary(teca)  # um rápido sumário estatítico
+dim(teca)      # dimensão do conjunto de dados
+```
+
+
+Criando um gráfico de dispersão entre **diâmetro (cm)** e **altura (m)**. O default da função $\color{magenta}{plot()}$ é usar type = **p**. No entanto outros tipos de plotagem (**type**) estão disponíveis. O argumento **type** pode assumir: (**p** = points, **l** = lines, **b** = both, **c** = lines part alone of **b**, **o** = ‘overplotted’, **h** = ‘histogram’, **s** = stair steps,**S** = other steps, **n** = no plotting).
+
+
+### Modificando o tipo de gráfico ($\color{blue}{type}$).
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=5, fig.width=5}
+# mar = inferior, esquerda, superior e direita.
+par(mar = c(4.5,3.5,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, main = "type = default")
+plot(teca$DAP,teca$V, type="l", main = "type = l")
+plot(teca$DAP,teca$V, type="b", main = "type = b")
+plot(teca$DAP,teca$V, type="o", main = "type = o")
+```
+
+### Adicionando título, subtítulo e rótulos 
+
+
+Usar os comandos $\color{blue}{main}$ e $\color{blue}{sub}$ para adicionar um título e subtítulo ao gráfico. Para modificar os títulos dos eixos usar os comandos $\color{blue}{xlab}$ = **Título do eixo x** e $\color{blue}{ylab}$ = **Título do eixo y**.
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=6, fig.width=6}
+par(mar = c(4.5,3.5,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, type = "o", main = "Relação DAP-Volume")
+
+plot(teca$DAP,teca$V, type = "o", main = "Relação DAP-Volume",
+     sub = "(Árvores de Tectona grandis)")
+
+plot(teca$DAP,teca$V, type = "o", main = "Relação DAP-Volume",
+     xlab = "DAP (cm)")
+
+plot(teca$DAP,teca$V, type = "o", main = "Relação DAP-Volume",
+      xlab = "DAP (cm)", ylab = expression(Volume ~ (m^3)))
+```
+
+
+O comando $\color{blue}{title()}$ (comando de baixo nível) constitui outro mecanismo de inserção de título e rótulos de eixos em gráficos da $\color{magenta}{plot()}$.
+
+
+```{r , eval=TRUE, dpi= 600, out.width="55%",fig.height=6, fig.width=6}
+par(mar = c(4.5,3.5,1.5,1), mgp = c(2,1,0))
+
+plot(teca$DAP,teca$V, type = "o", xlab = "", ylab = "")
+
+title("Relação DAP-Volume", xlab = "DAP (cm)", ylab = expression(Volume ~ (m^3)))
+
+```
+
+
+Se o título for demasiadamente grande pode-se fazer quebra de linha:
+
+
+```{r , eval=TRUE, dpi= 600, out.width="55%",fig.height=6, fig.width=6}
+par(mar = c(4.5,3.5,1.5,1), mgp = c(2,1,0))
+
+plot(teca$DAP,teca$V, type="o", 
+     main="Relação DAP-Volume de árvores de Tectona grandis")
+```
+
+
+```{r , eval=TRUE, dpi= 600, out.width="55%",fig.height=6, fig.width=6}
+par(mar = c(4.5,4,2.5,1), mgp = c(2,1,0))
+
+plot(teca$DAP,teca$V, type="o", 
+     main="Relação DAP-Volume \n (Tectona grandis)",
+     xlab = "DAP (cm)", ylab = expression(Volume ~ (m^3)))
+```
+
+### Modificando tipos de pontos ($\color{blue}{\textbf{pch}}$)
+
+Pode-se alterar o tipo de ponto usando o comando $\color{blue}{pch}$, que recebe um valor numérico que define o tipo de ponto plotado no gráfico.
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=8, fig.width=8}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(3,2))
+plot(teca$DAP,teca$V, pch=0, main = "pch=0")
+plot(teca$DAP,teca$V, pch=4, main = "pch=4")
+plot(teca$DAP,teca$V, pch=17, main = "pch=17 (triângulo sólido)")
+plot(teca$DAP,teca$V, pch="M", main = "pch=M")
+plot(teca$DAP,teca$V, pch="T", main = "pch=T")
+plot(teca$DAP,teca$V, pch="1", main = "pch=1 (entre aspas)")
+```
+
+
+### Modificando tipos de linhas ($\color{blue}{\textbf{lty}}$)
+
+Pode-se alterar o tipo de linha usando o comando $\color{blue}{lty}$, que assume um valor numérico que varia de **0 a 6**.
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=8, fig.width=8}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(3,2))
+plot(teca$DAP,teca$V, type="l", main = "default (solid)")
+plot(teca$DAP,teca$V, type="l", lty=0, main = "sem linha")
+plot(teca$DAP,teca$V, type="l", lty=2, main = "dashed")
+plot(teca$DAP,teca$V, type="l", lty=4, main = "dotdash")
+plot(teca$DAP,teca$V, type="l", lty=5, main = "longdash")
+plot(teca$DAP,teca$V,type="l", lty=6, main = "twodash")
+```
+
+
+### Modificando a largura das linhas ($\color{blue}{\textbf{lwd}}$)
+
+Pode-se alterar a largura da linha usando o comando $\color{blue}{lwd}$, que assume sempre um valor numérico positivo **maior ou igual a 1**.
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=6, fig.width=6}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, type="l", lty=2, main = "default")
+plot(teca$DAP,teca$V, type="l", lty=2, lwd=2, main = "lwd=2")
+plot(teca$DAP,teca$V, type="l", lty=2, lwd=4, main = "lwd=4")
+plot(teca$DAP,teca$V, type="l", lty=2, lwd=15, main = "lwd=15")
+```
+
+### Modificando cores de pontos e linhas ($\color{blue}{\textbf{col}}$)
+
+Pode-se alterar a cor das linhas e pontos basta usar o comando $\color{blue}{col}$ e especificar entre aspas a cor desejada. A função $\color{magenta}{colors()}$ fornece um variedade de cores disponíveis para uso. Utilize a função $\color{magenta}{demo(\color{black}{colors)}}$ para visualizar uma demostração de cores.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+head(colors(), 40)
+length(colours())
+```
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=7, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, pch=0, col="red", main = "col = red")
+plot(teca$DAP,teca$V, pch=15, col="lightblue", main = "col = lightblue")
+plot(teca$DAP,teca$V, type="l", lty=2, lwd=4, col="yellow", main = "col = yellow")
+plot(teca$DAP,teca$V, type="l", lty=2, lwd=2, col="green3", main = "col = green3")
+```
+
+
+### Modificando cores do título e eixos ($\color{blue}{\textbf{col.main}}$, $\color{blue}{\textbf{col.lab}}$ e $\color{blue}{\textbf{col.axis}}$)
+
+Pode-se alterar as cores do título e labels dos eixos x e y usando os comandos $\color{blue}{col.main}$ e $\color{blue}{col.lab}$. O comando $\color{blue}{col.axis}$ pode ser usado para modificar as cores dos valores dos eixos. Além disso, existem comandos de baixo nível que realizam as mesmas tarefas: $\color{magenta}{title()}$.
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=7, fig.width=7}
+par(mar = c(4.5,3.5,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, type="o", main="Relação DAP-Volume",
+     xlab="DAP (cm)", ylab=expression(Volume ~ (m^3)),
+     col.main="red4")
+
+plot(teca$DAP,teca$V, type="o", main="Relação DAP-Volume",
+     xlab="DAP (cm)", ylab=expression(Volume ~ (m^3)),
+     col.main="red4", col.lab="orange3")
+
+plot(teca$DAP,teca$V, type="o", main="Relação DAP-Volume",
+     xlab="DAP (cm)", ylab=expression(Volume ~ (m^3)),
+     col.main="red4", col.lab="orange3",
+     col.axis="green4")
+
+plot(teca$DAP,teca$V, type="o", xlab="", ylab="")
+title("Relação DAP-Volume", col.main="purple",
+     xlab="DAP (cm)", ylab=expression(Volume ~ (m^3)), col.lab="green4")
+```
+
+### Modificando os limites dos eixos ($\color{blue}{\textbf{xlim}}$, $\color{blue}{\textbf{ylim}}$ e $\color{blue}{\textbf{axis}}$)
+
+Pode-se alterar os limites dos eixos (mínimos e máximos) usando os comandos $\color{blue}{xlim}$ e $\color{blue}{ylim}$. Além disso, o comando $\color{blue}{axis}$ pode ser usado para obter uma maior personalização dos eixos. Porém, no plot original deve constar **axes = FALSE**.
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=8, fig.width=8}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(3,2))
+
+plot(teca$DAP,teca$V, pch=0, col="red", 
+     xlim=c(0, 40), ylim=c(0, 0.8),
+     main="xlim=c(0, 40) e ylim=c(0, 0.8)")
+
+plot(teca$DAP,teca$V, pch=0, col="red", 
+     xlim=c(6, 30), ylim=c(0, 0.8),
+      main="xlim=c(6, 30) e ylim=c(0, 0.8)")
+
+plot(teca$DAP,teca$V, pch=0, col="red", 
+     xlim=c(5, 18), ylim=c(0, 0.5),
+     main="xlim=c(5, 18) e ylim=c(0, .5)")
+
+plot(teca$DAP,teca$V, pch=0, col="red", 
+     xlim=c(min(teca$DAP), max(teca$DAP)), 
+     ylim=c(min(teca$V), max(teca$V)),
+     main="xlim=c(min, max) e ylim=c(min, max)")
+
+plot(teca$DAP,teca$V, pch=0, col="red", axes=F)
+axis(1, seq(from = round(min(teca$DAP),2), 
+            to = round(max(teca$DAP),2), 
+            by = 2))
+axis(2, seq(from = round(min(teca$V),2), 
+            to = round(max(teca$V),2), 
+            by = 0.1))
+```
+
+### Modificando as bordas dos gráficos ($\color{blue}{\textbf{bty}}$)
+
+Pode-se alterar o estilo de borda do gráfico usando o comando $\color{blue}{bty}}$. As opções disponíveis são: **bty** ="o", "l", "7", "c", "u", "]".
+
+
+```{r , eval=TRUE, dpi= 600,fig.height=10, fig.width=8}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(4,2))
+plot(teca$DAP,teca$V, pch=0, col="red", bty="o", main="bty = o (default")
+plot(teca$DAP,teca$V, pch=0, col="red", bty="l", main="bty = l")
+plot(teca$DAP,teca$V, pch=0, col="red", bty="7", main="bty = 7")
+plot(teca$DAP,teca$V, pch=0, col="red", bty="c", main="bty = c")
+plot(teca$DAP,teca$V, pch=0, col="red", bty="u", main="bty = u")
+plot(teca$DAP,teca$V, pch=0, col="red", bty="]", main="bty = ]")
+
+plot(teca$DAP,teca$V, pch=0, col="red", main="Função = box()")
+box(which="plot", lty=2, bty ="l", lwd=5)
+```
+
+
+### Modificando o comprimento e a direção dos marcadores de eixos ($\color{blue}{\textbf{tcl}}$)
+
+
+```{r , eval=TRUE, dpi= 600,fig.height=7, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, pch=0, main="tcl=-0.5 (default)")
+plot(teca$DAP,teca$V, pch=0, tcl=0.4, main="tcl=0.4")
+plot(teca$DAP,teca$V, pch=0, tcl=0.01, main="tcl=0.01")
+plot(teca$DAP,teca$V, pch=0, tcl=-1, main="tcl=-1")
+```
+
+
+### Modificando a orientação dos valores nos eixos ($\color{blue}{\textbf{las}}$)
+
+
+```{r , eval=TRUE, dpi= 600,fig.height=7, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, pch=0, las=0, main="paralelos aos eixos")
+plot(teca$DAP,teca$V, pch=0, las=1, main="sempre horizontais")
+plot(teca$DAP,teca$V, pch=0, las=2, main="perpendiculares aos eixos")
+plot(teca$DAP,teca$V, pch=0, las=3, main="sempre verticais")
+```
+
+
+### Modificando o tamanho dos pontos ($\color{blue}{\textbf{cex}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=7, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(teca$DAP,teca$V, pch=0,  main="cex = 1 (default)")
+plot(teca$DAP,teca$V, pch=0, cex=0.5, main="cex = 0.5")
+plot(teca$DAP,teca$V, pch=0, cex=1.5, main="cex = 1.5")
+plot(teca$DAP,teca$V, pch=0, cex=3, main="cex = 3")
+```
+
+
+### Modificando o tamanho do título, valores e labels dos eixos ($\color{blue}{\textbf{cex.main}}$, $\color{blue}{\textbf{cex.axis}}$ e $\color{blue}{\textbf{cex.lab}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=12, fig.width=8}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(4,2))
+
+plot(teca$DAP,teca$V, pch=0, main="default")
+
+plot(teca$DAP,teca$V, pch=0, main="Relação DAP-Volume",cex.main=1.5)
+plot(teca$DAP,teca$V, pch=0, main="Relação DAP-Volume",cex.main=2)
+
+plot(teca$DAP,teca$V, pch=0, cex.axis=.5, main="cex.axis = .5")
+plot(teca$DAP,teca$V, pch=0, cex.axis=1.5, main="cex.axis = 1.5")
+
+plot(teca$DAP,teca$V, pch=0, xlab="DAP (cm)",cex.lab=.5, main="cex.lab = .5")
+plot(teca$DAP,teca$V, pch=0, xlab="DAP (cm)",cex.lab=1.5, main="cex.lab = 1.5")
+
+plot(teca$DAP,teca$V, pch=0, xlab="")
+title(main="Relação DAP-Volume", cex.main=2, xlab="DAP (cm)", cex.lab=1.5)
+```
+
+
+## A função $\color{magenta}{\textbf{hist()}}$
+
+A função genérica $\color{magenta}{hist()}$ calcula um histograma para os valores de dados fornecidos. Caso a especificação seja **plot = TRUE** (default), um histograma é plotado. Do contrário, se **plot = FALSE** a função apenas calcula internamente todos os parâmetros de $\color{magenta}{hist()}$. Você pode acessar os argumentos da função fazendo: **?hist** ou **?plot.histogram**. Os principais comandos da função $\color{magenta}{hist()}$:
+
+$\textbf{Sintaxe}$
+
+$\color{magenta}{hist(\color{black}{x,~breaks~=~"Sturges",~nrow,~freq~=~NULL,~include.lowest~=~TRUE,~right~=~TRUE,~col~=~NULL,~border~=~NULL,~main~=~"Histogram of",~xlim~=~range(breaks),~ylim~=~NULL,~xlab,~ylab,~axes~=~TRUE,~right~=~TRUE})}$
+
+
+Onde:
+
+$\color{black}{\textbf{x}}$ = conjunto de dados;
+
+$\color{black}{\textbf{breaks}}$ = define os intervalos da classe - pode ser uma função, vetor, número;
+
+$\color{black}{\textbf{freq}}$ = Se TRUE = frequência (contagem), FALSE = densidade (probabilidade);
+
+$\color{black}{\textbf{include.lowest}}$ = Incluir o menor valor no intervalo definido pelo break;
+
+$\color{black}{\textbf{col e border}}$ = Cores das barras e das bordas;
+
+$\color{black}{\textbf{main}}$ = Título do gráfico; 
+
+$\color{black}{\textbf{xlim e ylim}}$ = Limites dos eixos;
+
+$\color{black}{\textbf{xlab e ylab}}$ = Título dos eixos;
+
+$\color{black}{\textbf{axes}}$ = Se axes = TRUE os eixos são desenhados; e
+
+$\color{black}{\textbf{right}}$ = Se right = TRUE intervalo aberto a esquerda.
+
+
+```{r , eval=TRUE, collapse = TRUE, dpi= 600, fig.height=3, fig.width=3}
+hist(teca$DAP, main="default")
+rug(teca$DAP)
+```
+
+
+### Modificando o intervalo das classes 
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=8, fig.width=8}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+
+hist(teca$DAP, right = TRUE);rug(teca$DAP)
+hist(teca$DAP, right = FALSE); rug(teca$DAP)     #Intervalo aberto a direita
+
+x <- c(2,2,2,3,4,4,5,6,7,7,7,8)
+
+hist(x, right=TRUE)
+hist(x, right=FALSE)
+```
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=5}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+
+hist(x, right = TRUE, 
+     include.lowest = TRUE)
+
+# Mensagem de aviso, pois falta o argumento breaks
+hist(x, right = TRUE, 
+     include.lowest = FALSE)         
+
+hist(x, right = TRUE, 
+     include.lowest = FALSE,
+     breaks=1:8)                    # Intervalo entre as classes
+```
+
+
+### Modificando os breaks
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3, fig.width=5.5}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+
+hist(teca$DAP, col="red4", probability = TRUE)
+
+hist(teca$DAP, col="red4", probability = TRUE,
+     breaks = c(c(0,5), c(5,10), c(10,15), c(15,20), c(20,25), c(25,30), c(30,35)),
+     ylim=c(0,0.06))
+```
+
+
+### Parâmetros do histograma
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3, fig.width=5}
+hist <- hist(teca$DAP)
+hist$breaks               # breakpoints (Regra de Sturges).
+hist$counts               # frequência absoluta em cada classe.
+hist$mids                 # ponto médio das classes.
+hist$density      
+```
+
+
+### Modificando as cores das colunas e bordas ($\color{blue}{\textbf{col}}$ e $\color{blue}{\textbf{border}}$)
+
+
+```{r , eval=TRUE, dpi= 600}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+
+hist(teca$DAP, col="red4")
+hist(teca$DAP, col="green")
+
+hist(teca$DAP, col="red4")
+hist(teca$DAP, col="red4", border="blue")
+```
+
+
+### Mostrando as probabilidades ($\color{blue}{\textbf{density}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3, fig.width=5.5}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+hist(teca$DAP)
+hist(teca$DAP, probability = TRUE)             # density = 0 a 1
+```
+
+
+### Número de classes ($\color{blue}{\textbf{nc}}$)
+
+
+```{r , eval=TRUE, dpi= 600}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+
+hist(teca$DAP, main = "nc = Sturges")
+hist(teca$DAP, nc = 10, main = "nc = 10")
+hist(teca$DAP, nc = 6, main = "nc = 6")
+hist(teca$DAP, nc = 3, main = "nc = 3")
+```
+
+
+## A função $\color{magenta}{\textbf{pie()}}$ (setores)
+
+A função genérica $\color{magenta}{pie()}$ pode ser usada para construir um gráfico de setores. Para saber os principais argumentos da função faça **?pie**.
+
+$\textbf{Sintaxe}$
+
+$\color{black}{\textbf{labels}}$ = vetor contendo os rótulos de cada fatia;
+
+$\color{black}{\textbf{radius}}$ = raio da circunferência do gráfico (default=1); e
+
+$\color{black}{\textbf{col}}$ = vetor contendo as cores de cada fatia.
+
+
+Construindo uma gráfico de setores a partir de um data frame com as contagens já disponíveis:
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=2.5, fig.width=6}
+par(mar = c(1,3,1,1), mgp = c(1,1,0))
+df <- data.frame(
+  especie = c("Araucaria", "Acapu", "Mogno", "Ipe"),
+  contagem = c(15, 30, 10, 20))
+print(df)
+
+pie(df$contagem, labels = df$especie, main="")
+```
+
+
+### Usando a função $\color{magenta}{\textbf{table()}}$
+
+Para obter contagens de fatores pode-se usar a função $\color{magenta}{table()}$. Vamos obter uma tabela de contagem para o data set iris. **Quantas flores existem de cada espécie** (setosa, virginica e versicolor)?
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=2.5, fig.width=6}
+par(mar = c(1,3,1,1), mgp = c(1,1,0))
+head(iris)
+table(iris$Species)
+pie(table(iris$Species))
+```
+
+
+### Modificando cores ($\color{blue}{\textbf{col}}$)
+
+**Um esquema de cores**
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=2.5, fig.width=6}
+par(mar = c(1,3,1,1), mgp = c(1,1,0))
+pie(rep(1, 24), col = rainbow(24), radius = 1)
+```
+
+
+**Modificando a cor das fatias**
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=2.5, fig.width=6}
+par(mar = c(1,3,1,1), mgp = c(1,1,0), mfrow = c(1,2))
+
+pie(table(iris$Species),col = c("purple", "violetred1", "green3"))
+    
+pie(table(iris$Species),col = gray(seq(0.4, 1.0, length = 6)))
+
+```
+
+
+### Modificando o sentido do desenho das fatias (horário e anti-horário)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=2.5, fig.width=6}
+par(mar = c(1,3,1,1), mgp = c(1,1,0), mfrow = c(1,2))
+
+pie(table(iris$Species),
+    col = c("purple", "violetred1", "green3"),
+    clockwise = TRUE)
+
+pie(table(iris$Species),
+    col = c("purple", "violetred1", "green3"),
+    clockwise = FALSE)
+```
+
+
+### Modificando o tamanho do gráfico ($\color{blue}{\textbf{radius}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=5, fig.width=6}
+par(mar = c(1,3,1,1), mgp = c(1,1,0), mfrow = c(2,2))
+
+pie(table(iris$Species), radius=0.3,
+    col = c("purple", "violetred1", "green3"),
+    main = "radius=0.3")
+
+pie(table(iris$Species), radius=0.5,
+    col = c("purple", "violetred1", "green3"),
+    main = "radius=0.5")
+
+pie(table(iris$Species), radius=0.7,
+    col = c("purple", "violetred1", "green3"),
+    main = "radius=0.7")
+
+pie(table(iris$Species), radius=1,
+    col = c("purple", "violetred1", "green3"),
+    main = "radius=1")
+```
+
+
+## A função $\color{magenta}{\textbf{boxplot()}}$ 
+
+
+A função $\color{magenta}{boxplot()}$ pode ser usada para obter um gráfico de boxplot.
+
+
+### Criando um boxplot
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3.5, fig.width=7}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+?boxplot
+boxplot(Sepal.Width~Species, data=iris)
+boxplot(Petal.Width~Species, data=iris)
+```
+
+
+### Modificando as cores das caixas ($\color{blue}{\textbf{col}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3.5, fig.width=5.5}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0))
+boxplot(Sepal.Width~Species, data=iris, col=c("red4", "green","blue"))
+```
+
+
+### Plotando os outliers ($\color{blue}{\textbf{outline}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3.5, fig.width=7}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+
+boxplot(Petal.Length~Species, data=iris, 
+        col=c("red4", "green","blue"), outline=TRUE)
+
+boxplot(Petal.Length~Species, data=iris, 
+        col=c("red4", "green","blue"), outline=FALSE)
+```
+
+
+### Alterando a orientação ($\color{blue}{\textbf{horizontal}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3, fig.width=7}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+
+boxplot(Petal.Length~Species, data=iris, 
+        col=c("red4", "green","blue"),
+        outline=FALSE, horizontal=FALSE)
+
+boxplot(Petal.Length~Species, data=iris, 
+        col=c("red4", "green","blue"), 
+        outline=FALSE, horizontal=TRUE)
+```
+
+
+### Inserindo a variação dentro da caixa do boxplot ($\color{blue}{\textbf{varwidth}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=3, fig.width=7}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+
+boxplot(Sepal.Width~Species, data=iris, 
+        col=c("red4", "green","blue"), 
+        outline=TRUE, varwidth=FALSE)
+
+boxplot(Sepal.Width~Species, data=iris, 
+        col=c("red4", "green","blue"), 
+        outline=TRUE, varwidth=TRUE)
+```
+
+
+## Adicionando **elementos** a um gráfico existente
+
+
+### Adcionando pontos ($\color{magenta}{\textbf{points()}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=6}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0))
+plot(teca$DAP,teca$V, pch=19)
+points(rev(teca$DAP), teca$V, col="red", pch=10) # Reverso da variável DAP com o V
+```
+
+
+### Adicionando linhas ($\color{magenta}{\textbf{lines()}}$)
+
+O comando $\color{magenta}{lines()}$ é muito usado para adicionar a linha de ajuste de regressão linear simples.
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=6}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0))
+plot(teca$DAP,teca$V, pch=19)
+lines(teca$DAP, teca$V*1.5, col="red4")
+lines(teca$DAP, teca$V/2, col="blue")
+```
+
+
+### Adicionando retas ($\color{magenta}{\textbf{ablines()}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=6}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0))
+plot(teca$DAP,teca$V, pch=19)
+
+# x = intercepto e y = beta 1
+abline(lm(teca$V ~ teca$DAP)$coefficients[1],
+       lm(teca$V ~ teca$DAP)$coefficients[2], 
+       col="red", lwd=2, lty=1) 
+
+abline(h=.4, col="red4")
+
+# Reta horizontal passando por y=200 na cor vermelha
+abline(h=.2, col="red4", lwd=4)   
+
+# Reta vertical passando por x=10 na cor amarela, 
+# do tipo pontilhada e com largura de 5
+abline(v=10, col="yellow", lty=3, lwd=5) 
+
+# Ficou na frente da linha anterior
+abline(v=10, col="red", lty=3, lwd=1) 
+```
+
+
+### Adicionando texto ($\color{magenta}{\textbf{text()}}$)
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=6}
+par(mar = c(2,3,1.5,1), mgp = c(2,1,0))
+plot(teca$DAP,teca$V, pch=19)
+text(10,0.6, "Tectona grandis")
+text(16,0.5, "R para floresta")
+```
+
+
+### Múltiplos gráficos na mesma janela
+
+
+```{r , eval=TRUE, dpi= 600}
+# Duas linhas e duas colunas
+op <- par(mar = c(4.5,3,1,1), mgp = c(2,1,0), mfrow = c(2,2))      
+plot(teca$DAP,teca$V, pch=14, col="green")
+plot(teca$DAP,teca$V, type="l", lty=5, lwd=4)
+boxplot(Sepal.Length~Species, data=iris, col="blue4")
+hist(teca$H, nc=5, col="orange")
+par(op)
+plot(teca$DAP,teca$H, pch=14)
+```
+
+
+**Configurando as margens**
+
+
+```{r , eval=TRUE, dpi= 600}
+# Margens - mar(bottom, left, top, right)
+op <- par(mfrow=c(2,2), mar = c(4.5,3,1,1))
+plot(teca$DAP,teca$V, pch=14)
+plot(teca$DAP,teca$V, pch=20)
+plot(teca$DAP,teca$V,type="l", lty=2, col="blue4")
+hist(teca$DAP, nc=5)
+```
+
+# Análise exploratória de dados
+
+## Configurando diretório de trabalho ($\color{magenta}{\textbf{getwd()}}$ e $\color{magenta}{\textbf{setwd()}}$)
+
+
+Um detalhe importante no início de cada seção de trabalho no R é inspecionar o seu diretório de trabalho atual, isto é, o local onde serão salvos os arquivos produzidos pelo R (.R, etc.). Para tanto, basta usar a função $\color{magenta}{getwd()}$. Caso não esteja no diretório desejado use a função $\color{magenta}{setwd(\color{blue}{choose.dir()})}$ para selecioná-lo. A função $\color{magenta}{dir()}$ é usada para listar os arquivos existentes no diretório corrente.
+
+
+```{r , eval=FALSE}
+getwd()
+setwd(choose.dir())
+dir()
+```
+
+
+## Importando um conjunto de dados 
+
+### Funções $\color{magenta}{\textbf{read.csv()}}$ e $\color{magenta}{\textbf{read.table()}}$
+
+O R permite importar dados disponíveis em outros formatos, por exemplo, **.csv** (Comma-separated values) ou **.txt** (arquivo de texto). Ainda, é possível importar os dados de arquivos de outros programas estatísticos (SPSS, SAS, Stata). Duas funções extremamente úteis para realizar essa tarefa são $\color{magenta}{read.csv()}$ (importa arquivos no formato **.csv**) e $\color{magenta}{read.table()}$ (importar arquivos no formato **.txt**). Se os dados estiverem em planilha do Microsoft Excel, pode-se salvá-los com a extensão .txt fazendo: salvar como → texto (separado por tabulações) (*.txt)..
+
+A função $\color{magenta}{read.table()}$ possui diversos argumentos que devem ser cuidadosamente compreendidos. Alguns dos argumentos mais importantes são tratados:
+
+
+$\color{magenta}{read.table(\color{black}{file,header=T,sep=";",quote = "\",dec = ".",as.is = !stringsAsFactors,na.strings=c("NA","","NULL",)encoding = "unknown"})}$
+
+Onde:
+
+$\color{black}{\textbf{file}}$ = nome do arquivo que contém o conjunto de dados;
+
+$\color{black}{\textbf{header}}$ = um valor lógico indicando se o arquivo contém os nomes das variáveis na primeira linha. Se header = TRUE informa que contém nomes;
+
+$\color{black}{\textbf{quote}}$ = define células de texto. O default é interpretar tanto aspa simples como dupla presentes;
+
+$\color{black}{\textbf{sep}}$ = separador de colunas usado no arquivo. O default é espaço;
+
+$\color{black}{\textbf{dec}}$ = separador decimal usado no arquivo. O default é ponto (.);
+
+$\color{black}{\textbf{as.is}}$ = o padrão da $\color{magenta}{read.table()}$ é converter variáveis de caracteres em fatores. Usar TRUE não fara a conversão;
+
+$\color{black}{\textbf{na.strings}}$ = se definir, pode informar que símbolos em células inteiras sejam interpretados como valores ausentes (NA); e
+
+$\color{black}{\textbf{encoding}}$ = codificação da acentuação. O deafult é **unknown** (desconhecido), na qual ele reconhece segundo o sistema operacional. As opções mais usadas são **Latin-** ou **UTF-8**.
+
+
+Os dados importados são coagidos a um data frame. Para usar as funções deve-se informar o caminho completo do arquivo. Para entender os argumentos da função $\color{magenta}{read.table()}$, importar-se-á o arquivo nomeado **arvores.txt** que deve estar no diretório corrente, e atribuir-se-á o nome **nativas** ao objeto.
+
+
+Do arquivo original **arvores.txt** têm-se os seguintes formatos:
+
+
+- As colunas estão separadas por tabulação (no R isso é definido pela expressão regular $\t$);
+- O separador decimal usado no arquivo é ponto (.);
+- Não tem aspas definindo as colunas de texto; e
+- O arquivo contém os nomes das variáveis na primeira linha.
+
+
+**O que aconteceria se especificasse errôneamente o separador de colunas usado no arquivo, cujo default é espaço?** No exemplo, usa-se o separador vírgula (**,**) para fins de exemplificação. Fazendo isso, as duas colunas existentes são interpretadas como uma só.
+
+
+```{r , eval=TRUE}
+nativas <- read.table(file = "arvores.txt", sep=",", header=T)
+dim(nativas) # apenas 1 coluna, porque o separador não está correto.
+```
+
+
+Então, para ler o arquivo **arvores.txt** corretamente deve-se fazer:
+
+
+```{r , eval=TRUE}
+nativas <- read.table("arvores.txt", header = T, sep="")
+
+nativas                               # Imprime o data frame
+
+summary(nativas)                      # Resumo estatítico dos dados
+
+class(nativas)                        # um data.frame
+
+dim(nativas)                          # dimensão do objeto
+
+head(nativas)                         # 6 primeiros dados
+
+nativas[nrow(nativas),]               # última linha
+```
+
+
+Um aspecto importante na análise exploratória é verificar se o conjunto de dados possui valores faltantes. Para tanto, pode-se usar a função lógica $\color{magenta}{is.na()}$:
+
+
+```{r, eval=FALSE}
+is.na(nativas)
+```
+
+
+### Função $\color{magenta}{\textbf{read.xlsx()}}$
+
+
+Existem diversos pacotes com funções dedicadas à importação de conjuntos de dados para o ambiente R. Um exemplo é o pacote **xlsx** [@R-xlsx] desenvolvido para permitir a leitura de dados diretamente de planilhas do Microsoft Excel usando a função $\color{magenta}{read.xlsx()}$. O Microsoft Excel permite salvar arquivos tanto no formato xls (versões até 2003) quanto no formato **xlsx** (versões anteriores). Inicialmente é preciso realizar a instalação: $\color{magenta}{install.packages(\color{black}{xlsx})}$. Em seguida, usar-se-á a função para importar o arquivo **guanandi.xlsx** que contém quatro variáveis (muda, dcolo, h (altura) e folhas).
+
+
+```{r, eval=TRUE, collapse=TRUE}
+library(xlsx)                    # Carrega o pacote
+
+# Usando read.xlsx(): sheetName = Nome arquivo
+guanandi <- read.xlsx(file = "guanandi.xlsx",
+                     sheetName = "guanandi", head = TRUE)
+
+guanandi
+```
+
+
+## Estatística descritiva
+
+
+Estatística descritiva é a parte da estatística que descreve e avalia um conjunto de dados, sejam populacionais ou oriundos de uma  amostra representativa da população. Em termos gerais, dispõe-se de dados amostrais. O simples uso de estatísticas descritivas não nos permite conclusões e/ou inferências robustas sobre uma determinada população. No entanto, nos fornece informações iniciais relevantes sobre a estrutura dos dados, e auxilia nas tomadas de decisões sobre tratamentos e métodos estatísticos adequados. Em estatítica descritiva, em geral, existem dois métodos comuns de representar os dados: **a) método gráfico** (gráficos e tabelas); e **b) método numérico** (medidas de tendência central, dispersão, entre outros). As medidas de tendência central incluem: **média aritmética, moda, mediana**, entre outras. As medidas de dispersão incluem: **amplitude total, variância, desvio padrão e coeficiente de variação**.
+
+
+### Medidas de tendência central
+
+
+**1. Média aritmética:** Matematicamente é a soma de todos os elementos de uma amostra ou população dividida pela quantidade de elementos. A média aritmética é a medida de tendência central mais conhecida e pode ser facilmente obtida no R usando a função $\color{magenta}{mean()}$:
+
+
+$$
+\bar{x} = \frac{1}{n} \sum_{i=1}^n X_i 
+$$
+```{r, eval=TRUE, collapse=TRUE}
+x <- c(1, 5, 7, 18, 32, 10, 6)               # criando um vetor
+mean(x)                                      # obtendo a média
+```
+
+
+Em algumas situações é possível que haja no conjunto de dados **valores ausentes** (NA). Nesses casos, deve-se usar argumento **na.rm = TRUE** para que o cálculo da média seja realizado desconsiderando o valor desconhecido **NA**.
+
+
+```{r, eval=TRUE, collapse=TRUE}
+w <- 1:5
+w[2] <- NA
+print(w)
+
+mean(w)                                # cálculo inapropriado
+
+mean(w, na.rm = TRUE)                  # cálculo apropriado
+```
+
+
+**2. Mediana:** É um valor intermediário de um conjunto de dados, cujos **n** valores são dispostos ordenadamente (rank). De outro modo, é valor que divide um conjunto de dados em duas partes iguais em que 50% dos dados ordenados estão acima da mediana e 50% estão abaixo da mediana. O uso da médiana é indicado quando o conjunto de dados possui valores extremos (outliers), pois o uso da média pode ser viesado. Existem duas regras básicas para descobrir a posição da mediana nos dados ordenados, a partir do número de observações (n) do conjunto de dados:
+
+
+- **Se n for ímpar:** a mediana será o valor que ocupa a posição: **(n+1)/2**
+- **Se n for par:** a mediana será a média aritmética dos valores que ocupam as posições: **n/2 e n/2+1**
+
+O ambiente R possui a função $\color{magenta}{median()}$ que calcula a mediana de um conjunto de dados, sem a necessidade de realizar o procedimento de ordenamento para encontrar a posição da medida e, assim obter seu valor.
+
+
+```{r, eval=TRUE, collapse=TRUE}
+x <- c(1, 5, 7, 18, 32, 10, 6)           # vetor não ordenado (n=7)
+y <- c(1, 5, 6, 7, 10, 18, 32)           # vetor ordenado (n=7)
+
+median(x)                                # a mediana?
+median(y)                                # a mediana?
+```
+
+
+**3. Moda:** Refre-se ao valor mais frequente dentro do conjunto de dados. Um conjunto de dados pode ser classificado quanto à moda em: **a) amodal; b) unimodal; c) bimodal; e d) multimodal**. Um conjunto de dados é dito **amodal** quando não possui moda. Isto ocorre quando não existe um valor mais frequente. **Unimodal** quando possui apenas uma moda (um valor mais frequente). **Bimodal** quando possui duas modas. **Multimodal** quando possui três ou mais modas. Por não ser uma medida de posição muito usual no R-base não existe uma função específica para calcular a **moda**. Então, para obter a moda utilizar-se-á do pacote **modeest** [@R-modeest] que dispões a função $\color{magenta}{mfv}$ (**Most frequent value**). No entanto, a função $\color{magenta}{mfv}$ recebe apenas um vetor numérico. Quando deseja-se saber o moda para um **vetor de character** (variável nominal) pode-se usar a função $\color{magenta}{modeOf()}$ do pacote **lsr** [@R-lsr]. Ao contrário da função $\color{magenta}{mfv}$, a função $\color{magenta}{modeOf()}$ funciona para vetores numéricos e caracteres.
+
+
+```{r, eval=TRUE, collapse=TRUE}
+library(modeest)
+v <- seq(from = 1, to = 10, by = 1)                 # amodal (todos valores)
+x <- c(0, 1, 2, 3, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8)    # unimodal
+y <- c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 7, 7, 7)       # bimodal
+z <- c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7)    # multimodal
+mfv(v)
+mfv(x)
+mfv(y)
+mfv(z)
+```
+
+
+Outra forma interessante de obter a moda é usar a função $\color{magenta}{table()}$ já apresentada na construção de gráficos de setores.
+
+
+```{r, eval=TRUE, collapse=TRUE}
+x <- c(0, 1, 2, 3, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8) 
+table(x)
+```
+
+
+Veja uma situação para um vetor de caracteres (variável nominal):
+
+
+```{r, eval=TRUE, collapse=TRUE}
+library(lsr)
+especie <- c(rep("Araucaria", 20), rep("Acapu", 10), 
+             rep("Mogno", 5), rep("Ipe", 2))
+class(especie)
+modeOf(especie)
+table(especie)
+```
+
+
+Para finalizar, agora um exemplo com todas as medidas de tendência central:
+
+
+```{r, eval=TRUE, collapse=TRUE}
+x <- c(20,7,5,9,6,21,24,10,12,22,21,16,13,6,6,2,19,3,10,7,2,18,4,6,18)
+mean(x)                                  # obtendo a média
+
+median(x)                                # obtendo a mediana
+
+mfv(x)                                   # obtendo a moda (pacote modeest)
+
+table(x)                                 # frequências de cada valor
+
+```
+
+
+### Medidas de dispersão
+
+
+**As medidas de dispersão:** são medidas descrevem a variabilidade existente em umdeterminado conjunto de dados. As medidas de dispersão incluem: **amplitude total, variância, desvio padrão e coeficiente de variação**.
+
+
+**1. Amplitude total:** Refere-se a diferença entre o maior (máximo) e o menor (mínimo) valor de um conjunto de dados. A AT é uma medida grosseira de existência de variabilidade, não sendo robusta para medir variabilidade de um conjunto de dados por utilizar-se apenas dos valores extremos na distibuição amostral. No entanto, serve para indicar se existe ou não dispersão no conjunto. No ambiente R pode-se obter a amplitude total através de modo indireto (AT = máximo - mínimo). Porém, existe a função $\color{magenta}{range()}$ que retorna os valores mínimos e máximos, permitindo, em seguida o cálculo da AT.
+
+
+```{r}
+t <- c(2, 4, 5, 6, 10)
+
+max(t)-min(t)                # indiretamente
+
+range(t)                     # mostra o min(t) e o max(t)
+
+range(t)[2]-range(t)[1]      # outra maneira
+```
+
+
+**2. Variância:** A variância amostral é uma medida de dispersão ou variabilidade dos dados que, mais comumente, é calculada relativamente à localização média. No ambiente R pode-se usar a função $\color{magenta}{var()}$ para calcular a variância. A variância amostral é dada por:
+
+
+$$
+\mbox{s²} = \frac{1}{n-1} \sum_{i=1}^n \left( x_i - \bar{x} \right)^2
+$$
+
+
+```{r, eval=TRUE, collapse=TRUE}
+z <- c(1, 2, 3, 4, 5)
+var(z)
+```
+
+
+Para treinar os outros recursos do ambiente R, realize o seguinte comando (a partir da fórmula da variância amostral):
+
+
+```{r, eval=TRUE, collapse=TRUE}
+#Soma de Quadrados dos Desvios, dividido pelo graus de liberdade (n-1)
+sum((z-mean(z))^2)/(length(z)-1)
+```
+
+
+**3. Desvio Padrão:** definido como a raiz quadrada positiva da variância. O uso do desvio-padrão tem grande vantagem sobre a variância, já que é apresentado na mesma unidade de medida dos dados brutos. No ambiente R pode-se usar a função $\color{magenta}{sd()}$ (standard deviation) para calcular o desvio padrão ou simplesmente obter a raiz quadrada da variância. O desvio padrão amostral é dado por:
+
+
+$$
+s = \sqrt{ \frac{1}{n-1} \sum_{i=1}^n \left( x_i - \bar{x} \right)^2 }
+$$
+```{r, eval=TRUE, collapse=TRUE}
+x <- c(1, 2, 3, 4, 5)
+
+sqrt(var(x))                       # é a raiz quadrada da variância
+sd(x)                              # ou usar sd()
+```
+
+
+**4. Coeficiente de variação:** Uma medida relativa da dispersão. Obtida em função do desvio padrão e média aritmética amostral. No R-base não existe uma função específica para calcular o CV. Porém, pode ser obtido facilmente dividindo o **desvio padrão pela média aritmética amostral** (desvio padrão/média), em seguida multiplica-se por 100, para obter a medida em percentual (%). Ainda, pode-se usar a função $\color{magenta}{coefficient.variation()}$ do pacote **FinCal** [@R-FinCal].
+
+
+```{r, eval=TRUE, collapse=TRUE}
+library(FinCal)
+z <- c(1, 2, 3, 4, 5)
+
+sd(z)/mean(z)*100                               # desvio padrao/média
+
+coefficient.variation(sd=sd(z),avg=mean(z))*100 # usar a função
+
+```
+
+
+Outras medidas de dispersão também podem ser calculada, como é o caso do erro-padrão da média: O Erro-padrão mede a precisão da média. A fórmula é: **desvio padrão/raiz(n)** ou **raiz quadrada(variância/n)**. Médias com menor erro-padrão são consideradas mais precisas.
+
+
+### Exercício prático: análise descritiva
+
+
+Para aprimorar o conhecimento da parte descritiva básica utilizar-se-á o **data set iris**. Inicialmente, use as funções do R-base detalhadas anteriormente e, somente depois use o pacote **fBasics** para obter as estatísticas descritivas para cada variável do **data set iris**. Responda as questões a seguir:
+
+**a)** Qual a média aritmética das variáveis Sepal.Length, Sepal.Width, Petal.Length e Petal.Width?
+
+**b)** Qual a medina das variáveis Sepal.Length, Sepal.Width, Petal.Length e Petal.Width?
+
+**c)** Qual a moda das variáveis Sepal.Length, Sepal.Width, Petal.Length, Petal.Width e Species?
+
+**d)** Qual a amplitude total das variáveis Sepal.Length, Sepal.Width, Petal.Length, Petal.Width?
+
+**e)** Qual a variância amostral das variáveis Sepal.Length, Sepal.Width, Petal.Length, Petal.Width?
+
+**f)** Qual o desvio padrão amostral das variáveis Sepal.Length, Sepal.Width, Petal.Length, Petal.Width?
+
+**g)** Qual o coeficiente de variação das variáveis Sepal.Length, Sepal.Width, Petal.Length, Petal.Width?
+
+**h)** Use o pacote **fBasics** e obtenha as estatísticas descritivas para cada variáveis do **data set iris**.
+
+
+# Testes estatísticos básicos
+
+
+Ao tratarmos da análise de experimentos, é necessária a realização de testes estatísticos para verificação de determinadas hipóteses. Teste de hipóteses referem-se ao estabelecimento de uma regra decisória que permite rejeitar ou não uma hipóese estatística com base nos elementos amostrais (LEHMANN; ROMANO, 2005). Região crítica de rejeição (maioria dos testes considera 95% de probabilidade).
+
+Atualmente, ao invés de fixar o nível de significância de um teste e simplesmente relatar se $H_0$ foi rejeitada ou não, tem-se dado preferência ao uso do valor de p. Assim, a hipótese de nulidade ($H_0$) é rejeitada se o valor de $p$ for menor ou igual à $\alpha$ (alfa). Então, para aplicação de um teste de hipótese os procedimento geral seria: 
+
+a) Formular as hipóteses $H_0$ e $H_1$ (hipótese do experimento) e definir o nível de significância ($\alpha$);
+b) Especificar a estatística do teste;
+c) Determinar o valor da estatística do teste e valor de p correspondente; e
+d) Comparar o $p$-valor com $\alpha$ (alfa).
+
+- Se $p$-valor for menor ou igual a $\alpha$, rejeita-se $H_0$.
+- Se $p$-valor for maior do que $\alpha$, não rejeita-se $H_0$.
+
+
+## Teste $t$-Student:
+
+
+Teste de hipótese utilizado em várias situações de pesquisa quando se deseja, por exemplo, testar uma afirmação sobre a média populacional ou fazer comparações entre as médias de duas amostras. Por exemplo, caso o interesse seja testar a hipótese nula $H_0$: $\bar{x_1}$ = $\bar{x_2}$ versus uma hipótese alternativa $\bar{x_1}$ > $\bar{x_2}$ ou, de outro modo $\bar{x_1}$ $\neq$ $\bar{x_2}$. Nesse caso, a estatística do teste é baseada na média amostral. 
+
+Se X tem distribuição normal com média e variância conhecida, pode ser demonstrado que a média amostral tem distribuição normal com média e variância $s^2$/n, em que n é o tamanho da amostra. A estatística do teste será: $t_{calculado}$ = Média amostral - média/ (desv.pad./raiz de n).
+
+
+**Regra de decisão:**
+
+
+- Se $t_{calculado}$ $\geq$ $t_{tabelado}$: rejeita-se a hipótese $H_0$. 
+- Se $t_{calculado}$ < $t_{tabelado}$: não rejeita-se a hipótese $H_0$. 
+
+
+O valor tabelado de $t$ é obtido em tabelas apropriadas, ou no próprio R, usando a função $\color{magenta}{pt()}$, de acordo com o nível de significância ($\alpha$). No caso, de teste $t$ bilateral tem-se $t_{tabelado}$ = t($\alpha$/2; n-1). A seguir, considere os diâmetros de árvores de duas amostras diferentes:
+
+
+```{r, eval=TRUE, collapse=TRUE}
+dap1 <- c(30.5,35.3,33.2,40.8,42.3,41.5,36.3,43.2,34.6,38.5)
+
+dap2 <- c(28.2,35.1,33.2,35.6,40.2,37.4,34.2,42.1,30.5,38.4)
+```
+
+
+### Teste $t$ para uma média
+
+Aqui, testar-se-á "dap1" tem média $\geq$ 35, estatisticamente. Então, as hipóteses do teste são:
+
+- $H_0$: $\bar{dap}$ = 35
+
+- $H_1$: $\bar{dap}$ $\geq$ 35
+
+
+O ambiente R dispõe da função $\color{magenta}{t.test()}$ para aplicação do teste $t$-Student. A interpretação do resultado (valor de t e valor de p): $t_{calculado}$ $>$ $t_{tabelado}$; $p$-valor < 0.05.
+
+
+```{r, eval=TRUE, collapse=TRUE}
+t.test(dap1,                                # amostra a ser testada
+       mu=35,                               # hipótese de nulidade
+       alternativa = "greater")             # teste unilateral à direita
+```
+
+
+### Teste $t$ para as médias de duas amostras independentes
+
+Agora, presumir-se-á que as amostras são oriundas de duas populações diferentes e que ambas possuem variâncias homogêneas e distribuição normal. Suponha que o interesse seja testar se as amostras (dap1 e dap2) possuem médias estatisticamente iguais ($\alpha$ = 1%), e que as amostras sejam independentes e oriundas de distribuição normal.
+
+
+Então, as hipóteses do teste são:
+
+
+- $H_0$: $\bar{dap_1}$ = $\bar{dap_2}$
+
+- $H_1$: $\bar{dap_1}$ $\neq$ $\bar{dap_2}$
+
+
+A função $\color{magenta}{t.test()}$ pode ser usada novamente:
+
+
+```{r, eval=TRUE, collapse=TRUE}
+t.test(dap1, dap2,                           # amostras a serem comparadas
+       conf.level = 0.99)                    # nível de significância
+```
+
+
+Interpretação do resultado: $p$-valor > 0.01, não rejeita-se a hipótese $H_0$. Ou seja, as amostras vêm de populações com mesma média.
+
+**IMPORTANTE:** Não estamos garantindo que as médias amostrais das duas populações são iguais, mas apenas mencionando, com base nessas amostras, que não existem argumentos que provem o contrário.
+
+### Teste $t$ para médias de duas amostras dependentes
+
+Esta é uma situação na qual os valores das duas amostras são coletados de certo número **n** de indivíduos (mesmas árvores), caracterizando pares de valores dos mesmos indivíduos, acarretando dependência entre as amostras. Dizemos, então, que os dados são pareados (teste $t$-pareado). Assim, para o mesmo conjunto de dados (dap1 e dap2), com nível de significância de 1%, considerar as seguintes hipóteses:
+
+- $H_0$: $\bar{dap_1}$ = $\bar{dap_2}$
+
+- $H_1$: $\bar{dap_1}$ $\neq$ $\bar{dap_2}$
+
+
+Novamente pode-se usar a função $\color{magenta}{t.test()}$, porém utilizar o argumento **paired=TRUE**, informando que as amostras são dependentes (ou pareadas).
+
+
+```{r, eval=TRUE, collapse=TRUE}
+t.test(dap1, dap2,
+       conf.level = 0.99,          # nível de significância
+       paired = TRUE)              # afirma dependência entre as amostras
+```
+
+
+# Aplicações Florestais
+
+## Análise de Variância (ANOVA)
+
+Análise de Variância (ANOVA) é uma técnica estatística que permite decompor a variação total existente no experimento em variação devido à diferença entre efeitos dos tratamentos e na variação devido ao acaso (erro experimental ou resíduo). De outro modo, Procedimento estatístico para testar a hipótese de que a média de três ou mais populações são iguais, baseado na análise das variâncias amostrais. Apesar do nome, é um teste de comparação de médias ! Entretanto, assim se chama pois permite decompor a variação total do experimento em função da variação dos efeitos dos tratamentos e da variação devido ao acaso (resíduos).
+
+
+**VARIAÇÃO TOTAL** = **EFEITO DOS TRATAMENTOS** (fatores controlados) + **EFEITO DO ERRO EXPERIMENTAL OU RESÍDUO** (Fatores não-controlados)
+
+Os dados amostrais são separados em grupos, segundo uma características específicas (fatores). Variam de acordo com os diferentes tipos de de delineamentos experimentais que podem ser:
+
+**a)** DIC (Delineamento Inteiramente Casualizado);
+
+**b)** DBC (Delineamento em Blocos Casualizados); e
+
+**c)** DQL (Delineamento em Quadrado Latino).
+
+O Teste F (Fisher-Snedecor) é usado para testar a ANOVA de um DIC. As Hipóteses $H_0$ e $H_1$ são:
+
+$H_0$: Todas as médias dos tratamentos são iguais entre si ($\bar{x_1}$=$\bar{x_2}$=$\bar{x_3}$=...= $\bar{x_n}$).
+
+$H_1$: Há pelo menos dois tratamentos cujas médias são diferentes entre si.
+
+
+**Regra de decisão:**
+
+
+Rejeita $H_0$: Se $F_{calculado}$ $>$ $F_{tabelado}$ (há pelo menos dois tratamentos com médias diferentes).
+
+Não rejeita $H_0$: Se $F_{calculado}$ $\leq$ $F_{tabelado}$ (todas as médias estatisticamente iguais entre si).
+
+
+### Delineamento Inteiramente Casualizado (DIC)
+
+O DIC é o mais simples dos delineamentos experimentais. Utiliza-se do princípio básico da repetição e casualização. No DIC os tratamentos experimentais são distribuídos às unidades experimentais de forma completamente aleatória (por sorteio). Possui flexibilidade quanto ao número de repetições por tratamento. É recomendado quando pode ser dada condições homogêneas ou uniformes para todas as unidades experimentais.
+
+Para fins de aplicação prática no R, considere a necessidade de estudos relativos ao comportamento da espécie $\color{red}{\textit{Schizolobium parahyba}}$ $\color{red}{var. amazonicum}$ em situações de viveiro. Assim, procedeu-se a instalação de um experimento sob o DIC com intuito de avaliar o crescimento em altura da espécie sob diferentes condições de sombreamento. Para tanto, foram estabelecidos **quatro tratamento** (pleno sol, 20%, 50% e 70% de sombreamento) com **cinco repetições** de 25 sementes. Os dados estão no arquivo **parica.txt** e correspondem aos valores médios da altura, em centímetros, obtidos após trinta dias de germinadas as sementes. 
+
+
+```{r , eval=TRUE, collapse=TRUE}
+parica <- read.table(file = "parica.txt", sep="", header=T)
+
+print(parica)
+```
+
+
+Inicialmente, vamos fazer uma anáilise exploratória dos dados. Dentre outras coisas, é importante conhecer a média e a variância para cada tratamento:
+
+
+```{r , eval=TRUE, collapse=TRUE}
+summary(parica)                       # um resumo
+
+# média de altura em cada tratamento?
+media <- tapply(parica$Rep, parica$Trat, mean) 
+print(media)
+
+# variância da altura em cada tratamento?
+var <- tapply(parica$Rep, parica$Trat, var)
+print(var)
+
+bartlett.test(parica$Rep, parica$Trat)  # homogeneidade de variâncias
+```
+
+
+Pode-se fazer uma plotagem da relação **Tratamento versus Altura da plântula**:
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+
+# plot: Rep x Trat
+plot(parica$Trat, parica$Rep, type="o", main="Schizolobium parahyba",
+      xlab="Tratamentos", ylab="Altura (cm)")
+points(media, pch=20, col=2, cex=1.5)      # Adiciona médias/tratamento
+
+# Usando boxplot
+boxplot(parica$Rep ~ parica$Trat, main="Schizolobium parahyba",
+      xlab="Tratamentos", ylab="Altura (cm)")
+points(media, pch=20, col=2, cex=1.5)
+```
+
+
+Para implementar a ANOVA para um experimento sob o Delineamento Inteiramente Casualizado (DIC) pode-se usar a função $\color{magenta}{aov()}$ do pacote **stats** do R-base [@R-base]. Em seguida, use a função $\color{magenta}{anova()}$ ou $\color{magenta}{summary()}$ para obter o quadro de ANOVA.
+
+
+```{r , eval=TRUE, collapse=TRUE}
+anova.DIC <- aov(Rep~Trat,data=parica)
+
+anova(anova.DIC)
+
+```
+
+
+Uma análise gráfica dos resultados da ANOVA para o DIC:
+
+
+```{r, dpi= 600, fig.height=7, fig.width=6}
+par(mfrow=c(2,2))
+plot(anova.DIC)                   # gráficos para análise dos resíduos
+```
+
+
+**Interpretação:** Há diferença entre pelo menos 2 tratamentos (rejeita-se $H_0$). 
+
+
+Quando há rejeição de $H_0$ ($F_{calculado}$ $>$ $F_{tabelado}$), constata-se que as médias dos tratamentos não são todas iguais entre si. Entretanto, o teste F não permite identificar quais tratamentos diferem entre si. Ou seja, quem é diferente de quem? Para identificar essas diferenças é necessário realizar testes **post-hoc** ou **Testes de comparações múltiplas**. Diversos testes de comparaçoes existem, por exemplo, **Teste de Tukey**, **Teste de Duncan**, etc. Assim, para o exemplo do Paricá aplicar-se-á o teste de comparações múltiplas de Tukey.
+
+
+```{r}
+Tukey <- TukeyHSD(anova.DIC)
+plot(Tukey)
+```
+
+
+### Pressupostos para realização de testes lineares (ANOVA, Regressão Linear)
+
+
+Para atender as premissas de modelos lineares é preciso, previamente às análises, verificar a normalidade dos resíduos e a homocedasticidade das variâncias.
+
+**Normalidade dos erros experimentais**: Os erros experimentais devem ser normalmente distribuídos
+**Homocedasticidade das variâncias**: os erros experimentais devem possuir homogeneidade de variâncias. Importante para validar os testes de comparação de médias.
+
+**Teste de normalidade mais comum**: Shapiro-Wilk
+
+A normalidade é admitida quando um valor de $p$ > 0,05 ($H_0$ = existem evidências para admitir a normalidade dos resíduos).
+
+
+```{r}
+shapiro.test(resid(anova.DIC))
+```
+
+
+O gráfico **Normal Q-Q plot** pode ser obtido usando as funções $\color{magenta}{qqnorm()}$ e $\color{magenta}{qqline()}$.
+
+
+```{r}
+qqnorm (resid(anova.DIC))       # obtendo o papel de probabilidade normal.
+qqline(resid(anova.DIC))        # inserindo uma linha auxiliar (linear).
+```
+
+
+**Homogeneidade de variâncias** - Teste de Levene
+Para testar a Homogeneidade de variâncias pode ser usar o pacote **car** [@R-car]. Execute **install.packages("car")**, caso não tenha instalado. A homogeneidade é admitida quando $p$ > 0,05).
+
+
+```{r}
+library(car)
+leveneTest(Rep~Trat,parica)
+```
+
+
+## Regressão Linear
+
+Regressão linear simples: utilizada para analisar relações entre variáveis contínuas. No R, para especificar um modelo é preciso usar a notação de fórmulas. Por exemplo, para um modelo de regressão com uma variável resposta **Y** (ou dependente) e uma variável preditora **X** (ou independente) a notação de fórmula a ser usada no R é: **Y ~ X**. Em que, o argumento **~** (**til**) significa **em relação a...** ou **modelado por...**. Ou seja, **Y** em relação a **X**, ou **Y** modelado por **X**. Caso hajam duas variáveis preditoras em seu modelo a formula seria **Y~X1+X2**. Para implementar uma regressão linear no ambiente R pode-se usar a função $\color{magenta}{lm()}$ disponível no R-base. A função retorna os valores dos coeficientes betas estimados através do Método de Mínimos Quadrados. Para fins de exemplificação serão usados os dados biométricos das **30 árvores** de $\color{red}{\textit{Tectona grandis}}$. As variáveis disponíveis são: **DAP (cm), H (m) e Volume (m³)**.
+
+
+```{r, eval=TRUE, echo=FALSE, warning=FALSE}
+library(data.table)
+```
+
+
+```{r, eval=TRUE, collapse=TRUE}
+teca <- fread("Tectona.csv")
+teca
+```
+
+
+### Gráficos de dispersão
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=7}
+attach(teca)
+par(mar = c(4.5,3.5,1.5,1), mgp = c(2,1,0), mfrow = c(1,2))
+
+plot(DAP,Volume, type = "p", main=NULL, font.main=NULL, col.main=NULL, 
+     xlab="DAP (cm)", ylab=expression(Volume~(m^3)), font.lab=1, col.lab="black",
+     font.axis=1, col.axis = "black")
+
+plot(H,Volume, type = "p", main=NULL, font.main=NULL, col.main=NULL, 
+     xlab="Altura (m)", ylab=expression(Volume~(m^3)), font.lab=1, col.lab="black",
+     font.axis=1, col.axis = "black")
+
+detach(teca)
+```
+
+
+### Ajuste de modelos
+
+
+Ajustar os modelos volumétricos de Berkhout $V = \beta_0 + \beta_1~(DAP)$, Kopezky-Gehrardt ($V = \beta_0 + \beta_1~(DAP^2)$) e Shumacher-Hall ($lnV = \beta_0 + \beta_1~(lnDAP) + \beta_2~(lnH)$:
+
+
+```{r}
+Berkhout <- lm(Volume ~ DAP, data=teca)                 # Berkhout
+KGehrardt <- lm(Volume ~ I(DAP^2), data=teca)           # Kopezky-Gehrardt
+SHall <- lm(log(Volume) ~ log(DAP) + log(H), data=teca) # Shumacher-Hall
+print(Berkhout); print(KGehrardt); print(SHall)
+```
+
+Para obter informações mais detalhadas do ajuste pode-se usar a função $\color{magenta}{summary()}$. Com uso da função $\color{magenta}{summary()}$ pode-se obter informações do erros-padrão (Std. Error) das estimativas dos coeficientes de regressão, Erro-Padrão de estimativa (Residual standard error), Coeficiente de Determinação (Multiple R-Squared) e Coeficiente de Determinação Ajustado (Adjusted R-squared). Além disso, pode-se vizualizar o teste F da significâcnia da regressão e o(s) teste(s) $t$-student para significância do(s) coeficiente(s) da regressão.
+
+
+```{r}
+summary(Berkhout)
+summary(KGehrardt)
+summary(SHall)
+```
+
+A função $\color{magenta}{anova()}$ permite obter a tabela de ANOVA da Regressão:
+
+
+```{r}
+anova(Berkhout)
+anova(KGehrardt)
+anova(SHall)
+```
+
+
+Pode-se visualizar a reta ajustada para o modelo de Berkhout ($V = \beta_0 + \beta_1~(DAP)$):
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=5}
+par(mar = c(4.5,3.5,1.5,1), mgp = c(2,1,0))
+
+plot(teca$Volume~teca$DAP, main="Berkhout", 
+     xlab="DAP (cm)", ylab = expression(Volume~(m^3)))
+abline(Berkhout,lty=2, col="red")
+#abline(coef(Berkhout))
+```
+
+
+Outras informaçoes importantes podem ser obtidas. Por exemplo, os valores preditos pelo modelo de regressão pode ser extraído com uso da função \textcolor{magenta}{\textbf{predict()}} e os reśiduos com a função $\color{magenta}{residuals()}$. 
+
+
+```{r}
+predict(Berkhout)
+residuals(Berkhout)
+```
+
+
+### Análise de Resíduos
+
+
+Os resíduos da regressão linear devem ser julgados quanto às pressuposições de normalidade, autocorrelação e homocedasticidade. O teste para normalidade dos resíduos pode ser realizado usado a função $\color{magenta}{shapiro.test}$. A autocorrelação pode ser detectada com uso da função $\color{magenta}{durbinWatsonTest}$ e a heterocedasticidade dos resíduos através da função $\color{magenta}{Breusch-Pagan}$.
+
+
+#### Normalidade dos resíduos
+
+
+Realizando o teste de normalidade dos resíduos ($\alpha$ = 0,05) para os modelos de Berkhout, Kopezky-Gehrardt e Shumacher-Hall:
+
+Teste para normalidade (valores de $p$ > 0,05 indicam resíduos com distribuição normal).
+
+
+```{r}
+shapiro.test(Berkhout$residuals)
+shapiro.test(KGehrardt$residuals)
+shapiro.test(SHall$residuals)
+```
+
+
+#### Autocorrelação de resíduos
+
+
+O teste Durbin-Watson ($\alpha$ = 0,05) pode ser utilizado para apontar indícios de autocorrelação dos resíduos em modelos de regressão linear. Quando $p$-value $\geq$ 0,05 não existem evidências de que os resíduos sejam autocorrelacionados. Para tanto, pode-se usar a função $\color{magenta}{durbinWatsonTest}$ disponível no pacote **car** [@R-car].
+
+
+```{r}
+library(car)
+durbinWatsonTest(Berkhout)
+durbinWatsonTest(KGehrardt)
+durbinWatsonTest(SHall)
+```
+
+
+#### Heterocedasticidade dos resíduos
+
+
+O teste Breusch-Pagan ($\alpha$ = 0,05) pode ser usado para detectar homocedasticidade de variâncias dos resíduos. Quando $p$-value $<$ 0,05 a hipótese nula ($H_0$) é rejeitada, isto é, há presença de heteroscedasticidade. Para aplicar o teste pode-se usar a função $\color{magenta}{bptest}$ disponível no pacote **lmtest** [@R-lmtest].
+
+
+```{r, warning=FALSE}
+library(lmtest)
+bptest(Berkhout)
+bptest(KGehrardt)
+bptest(SHall)
+```
+
+
+A função $\color{magenta}{plot}$ por default gera quatro gráficos uteis para detectar normalidade, homocedasticidade e valores influentes:
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(Berkhout)
+```
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(KGehrardt)
+```
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=7}
+par(mar = c(4.5,3,1.5,1), mgp = c(2,1,0), mfrow = c(2,2))
+plot(SHall)
+```
+
+
+### Multicolinearidade (modelos múltiplos)
+
+A inexistência de multicolinearidade é outra importante pressuposição que deve ser analisada em modelos de regressão linear múltipla. O grau de confundimento entre variáveis preditora pode ser verificado por meio da estatística **Variance Inflation Factor** – (**VIF**), para detectar problemas de multicolinearidade. É recorrente o uso de VIF $>$ 10 como critério para afirmar a existência de multicolinearidade no modelo de regressão linear múltipla. Para obter o valor da estatítica pode-se usar a função $\color{magenta}{vif}$ do pacote **faraway** [@R-faraway].
+
+
+```{r, warning=FALSE}
+library(faraway)
+vif(SHall)
+```
+
+
+## Amostragem Aleatória Simples (AAS)
+
+
+É o procedimento fundamental de seleção a partir do qual derivam os demais processos de amostragem [@R-brena1997inventario; @R-sanquetta2009inventarios]. A Amostragem Aleatória Simples (AAS) baseia-se num processo estritamente aleatório, onde as unidades amostrais (UAs) são selecionadas com igual probabilidade (1/N), em que N é o nº total de unidades de amostras que compõem o espaço amostral, ou seja, a população amostrada [@R-queiroz1998tecnicas].
+A seleção das unidades amostrais pode ser realizada com ou sem reposição. No sorteio com reposição uma determinada unidade de amostra pode ser sorteada mais de uma vez para compor a amostra. No sorteio sem reposição uma unidade de amostra poderá ser sorteada somente uma única vez para compor a amostra [@R-brena1997inventario]. Em inventários florestais a AAS é geralmente conduzida através de um sorteio sem reposição. Além disso, expõe que a inclusão de uma unidade amostral mais de uma vez na amostra refletirá uma homogeneização da variância entre as UAs [@R-queiroz1998tecnicas]. 
+
+
+### Estimadores da AAS
+
+As principais estimativas a serem obtidas para a AAS são:
+
+1. Média aritmética ($\bar{x}$);
+2. Variância ($S_x^2$);
+3. Desvio Padrão ($S_x$);
+4. Coeficiente de variação ($CV\%$);
+5. Intensidade amostral ($n$);
+6. Variância da média ($S_{\bar{x}}^2$);
+7. Erro padrão da média ($S_{\bar{x}}$);
+8. Erro de amostragem: absoluto ($E_a$) e relativo ($E_r$);
+9. Intervalo de confiança para média ($IC_{\bar{x}}$);
+10. Total da população ($\hat{X}$); e
+11. Intervalo de confiança para o total ($IC_{\hat{X}}$).
+
+### Estimando os parâmetros da AAS
+
+A seguir as principais estimativas da AAS serão obtidas usando a linguagem R. Os dados utilizados foram extraídos do livro **Inventário Florestal: Planejamento e execução**, com o seguinte enunciado: "Em um talhão de $\color{red}{\textit{Pinus taeda}}$ plantado em uma área de **40 hectares** foi realizado um inventário, cujo objetivo é estimar o volume de madeira da população em questão. Para a realização do inventário foi utilizado o processo de amostragem aleatória simples,onde se deseja saber quantas **parcelas de 600m²** devem ser usadas para atingir a precisão desejada. A definição do número ideal de parcelas depende da variabilidade da população. Para isto foi realizado um inventário piloto, onde foram medidas **16 parcelas**, com a finalidade de obter a variância da população e, assim, estimar a intensidade amostral para o inventário definitivo. Para os cálculos das estimativas foi considerado que o **erro máximo admissível é de 10%** e o **nível de probabilidade é de 95%** [@R-sanquetta2014inventarios, p. 110]."
+
+
+```{r, echo=FALSE, eval=TRUE, warning=FALSE}
+library("data.table")
+library(FinCal)
+# options(OutDec=",")
+```
+
+
+```{r, eval=TRUE, cols.print=2, rows.print=3}
+# Carregando o conjunto de dados
+AAS <- fread("AAS.csv")
+AAS
+```
+
+Obtendo as estatísticas básicas para as unidades amostrais:
+
+
+**1. Média aritmética** $\boldsymbol{(\bar{x})}$ - $m^3/parcela$:
+
+```{r, eval=TRUE, collapse=TRUE}
+mean(AAS$Volume)
+```
+
+**2. Variância** $\boldsymbol{(S_x^2)}$ - $(m^3/parcela)^2$
+
+```{r, eval=TRUE, collapse=TRUE}
+var(AAS$Volume)
+```
+
+**3. Desvio Padrão** $\boldsymbol{(S_x)}$ - $m^3/parcela$:
+
+```{r, eval=TRUE, collapse=TRUE}
+sd(AAS$Volume)
+```
+
+**4. Coeficiente de variação** $\boldsymbol{(CV\%)}$:
+
+```{r, eval=TRUE, collapse=TRUE}
+coefficient.variation(sd=sd(AAS$Volume),avg=mean(AAS$Volume))*100
+```
+
+**5. Intensidade amostral** $\boldsymbol{(n)}$: A intensidade de amostragem é função: i) da variabilidade da variável de interesse (volume da floresta); ii) do erro de amostragem máximo admissível; e iii) do nível de confiança fixado [@R-brena1997inventario]. Assim, para obter a estimativa de $n$ é necessário obter as seguintes informações:
+
+**a) O valor de** $\boldsymbol{E}$ (expectância do erro) - $m^3/parcela$: Em inventário florestal é usual estabelecer um erro máximo admissível de 10% para estimativa da média. Então, para obter o valor de $E$ basta fazer:
+
+$$
+E = (LE\,.\,\bar{x})
+$$
+Uma função para obter o valor de $\boldsymbol{E}$:
+
+```{r, eval=TRUE, collapse=TRUE}
+E <- function(x){
+  media = mean(x)
+  E = signif(0.1*media, 4)
+  return(E)
+}
+
+E(AAS$Volume)
+```
+
+**b) O número de unidades amostrais possíveis na população** $\boldsymbol{(N)}$: Quantas unidades de amostra de tamanho de 600 m² é possível estabelecer na população, cuja área total é de 400.000m² (40 hectares)? Para obter essa informação basta dividir a área da população pelo tamanho da parcela. Assim, obtêm-se que são possíveis 667 parcelas de 600m² na população.
+
+$$
+N = \frac{A}{a}
+$$
+
+Uma função para obter o valor de $\boldsymbol{N}$:
+
+```{r, eval=TRUE, collapse=TRUE}
+N <- function(A,a){
+  N <- ceiling(A/a)
+  return(N)
+}
+
+N = N(400000,600)
+N
+```
+
+**c) Determinar se a população é finita ou infinita**: Para determinar o número de unidades de amostras necessárias para atender determinada precisão e nível de probabilidade é necessário saber, antecipadamente, se a população é **Finita** ou **Infinita**. Para tanto, inicialmente é preciso obter a fração de amostragem $f$ e, em seguida, abservar a convenção [@R-brena1997inventario]:
+
+$$
+  \begin{cases}
+    Se \quad 1- f \geq 0,98 & \quad \text{População Infinita}\\
+    Se \quad 1- f < 0,98 & \quad \text{População Finita}
+  \end{cases}
+$$
+
+A fração de amostragem $\boldsymbol{(f)}$ é dada pela razão entre o número de unidades de amostra $\boldsymbol{(n)}$ e o número total de unidades de amostra possíveis na população $\boldsymbol{(N)}$ [@R-brena1997inventario; @R-sanquetta2014inventarios]:
+
+$$
+f = \frac{n}{N}
+$$
+
+Uma função para obter o Fator de Correção $\boldsymbol{FC}$ e constatar a natureza da população. O cálculo intermediário da fração de amostragem $\boldsymbol{(f)}$ é realizado e também retornado. A função $FC$ recebe três parâmetros: $\boldsymbol{x}$ = vetor da variável de interesse; $\boldsymbol{A}$ = aréa da população; e $\boldsymbol{a}$ = tamanho da unidade de amostra. O valor de $\boldsymbol{A}$ e $\boldsymbol{a}$ devem estar na mesma unidade de medida.
+
+
+```{r, eval=TRUE, collapse=TRUE}
+FC <- function(x,A,a){
+  n <- length(x)
+  N <- ceiling(A/a)
+  f <- n/N
+  FC <- 1-f
+  
+  if(FC >= 0.98){
+    cat("A população é Infinita. Portanto, despreze o FC na fórmula da n.\n")
+  }else{
+    cat("A população é Finita. Portanto, use o FC para corrigir n.\n")
+  }
+  return(list(f=f,FC=FC))
+}
+```
+
+
+```{r, eval=TRUE, collapse=TRUE}
+FC <- FC(x=AAS$Volume, A=400000, a = 600)
+```
+
+
+Determinados os valores de $E$, $N$ e constatada a natureza finita da população, pode-se obter a intensidade de amostragem ideal em função da variância:
+
+
+```{r, eval=TRUE, collapse=TRUE}
+n <- function(x,A,a){
+  N <- ceiling(A/a)
+  E = 0.1*mean(x)
+  t = qt(1-.05/2, df=length(x)-1)
+  n <- ceiling((N*t^2*var(x))/(N*E^2 + t^2*var(x)))
+  cat(paste("Para atender ao erro estabelecido você deve amostrar", n, 
+            "parcelas.\n"))
+  
+  if(n <= length(x)){
+    cat("Esforço amostral satisfatório. O IF é definitivo!")
+  }else{
+    cat(paste("Retorne a campo e meça mais", abs(length(x)-n), "parcelas."))
+  }
+}
+```
+
+
+```{r, eval=TRUE,collapse=TRUE}
+n(x = AAS$Volume, A = 400000, a = 600)
+```
+
+
+**6. Variância da média** $\boldsymbol{(S_{\bar{x}}^2)}$ - $(m^3/parcela)^2$: A variância da média para populações finitas é dada por:
+
+
+$$
+S_{\bar{x}}^2 = \frac{S_x^2}{n}\,.\,\left(\frac{N-n}{N}\right)
+$$
+
+```{r, eval=TRUE,collapse=TRUE}
+var(AAS$Volume)/length(AAS$Volume)*(FC$FC)
+```
+
+
+**7. Erro padrão da média** $\boldsymbol{(S_{\bar{x}})}$ - $(m^3/parcela)$: O erro padrão da média para populações finitas é dado por:
+
+
+$$
+S_{\bar{x}} = \pm\, \frac{S_x}{\sqrt{n}}\,.\,\sqrt{\left(1-f\right)}
+$$
+```{r, eval=TRUE,collapse=TRUE}
+sbarx <- sd(AAS$Volume)/sqrt(length(AAS$Volume))*(sqrt(FC$FC))
+sbarx
+```
+
+
+**8. Erro de amostragem:**
+
+**a) Erro de amostragem absoluto** $\boldsymbol{(E_a)}$ - $(m^3/parcela)$: O erro de amostragem absoluto é dado por:
+
+$$
+E_a = \pm\, t\,.\,S_{\bar{x}}
+$$
+
+```{r, eval=TRUE,collapse=TRUE}
+Ea <- qt(1-.05/2, df=length(AAS$Volume)-1)*sbarx
+Ea
+```
+
+**b) Erro de amostragem relativo** $\boldsymbol{(E_r)}$ - $\%$: O erro de amostragem relativo é dado por:
+
+
+$$
+E_r = \pm\, \frac{t\,.\,S_{\bar{x}}}{\bar{x}}\,.\,100
+$$
+
+```{r, eval=TRUE,collapse=TRUE}
+Er <- Ea/mean(AAS$Volume)*100
+Er
+```
+
+**9. Intervalo de confiança para média** $\boldsymbol{(IC_{\bar{x}})}$: O IC para média é dado por:
+
+
+$$
+IC_{\bar{x}} = [\bar{x} - \left(t\,.\,S_{\bar{x}}\right) \leq \bar{X} \leq \bar{x} + \left(t\,.\,S_{\bar{x}}\right) ] = P
+$$
+
+```{r, eval=TRUE,collapse=TRUE}
+# Limite inferior para média (LI)
+LIbarx <- mean(AAS$Volume)-Ea
+LIbarx
+
+# Limite superior para média (LS)
+LSbarx <- mean(AAS$Volume)+Ea
+LSbarx
+```
+
+
+Portanto, o IC para média é: $IC_{\bar{x}} = [21,61\, m^3/parcela \leq \bar{X} \leq 26,05\, m^3/parcela  ] = 95\%$. \newline
+
+
+**10. Total da população** $\boldsymbol{(\hat{X})}$ - $m^3$: O volume estimado para o total da população é dado por:
+
+
+$$
+\hat{X} = N\,.\,\bar{x}
+$$
+
+```{r, eval=TRUE,collapse=TRUE}
+hatX <- N*mean(AAS$Volume)
+hatX
+```
+
+
+**11. Intervalo de confiança para o total** $\boldsymbol{(IC_{\hat{X}})}$: O IC para a estimativa do volume total da população é dado por:
+
+
+$$
+IC_{\hat{X}} = [\hat{X} - N\left(t\,.\,S_{\bar{x}}\right) \leq X \leq \hat{X} + N\left(t\,.\,S_{\bar{x}}\right) ] = P
+$$
+```{r, eval=TRUE,collapse=TRUE}
+# Limite inferior para total da população (LI)
+LIhatx <- hatX - N*Ea
+LIhatx
+
+# Limite superior para total da população (LS)
+LShatx <- hatX + N*Ea
+LShatx
+```
+
+Portanto, o IC para o total da população é: $IC_{\hat{X}} = [14.409,8\, m^3 \leq \bar{X} \leq 17.374,4\, m^3] = 95\%$.
+
+
+Observe que para melhor compreensão dos cálculos os parâmetros da AAS foram obtidos passo a passo. Porém, é possível obter todas as estimativas criando apenas uma única função no ambiente R. A seguir é apresentada uma função genérica para obter as estimativas da AAS. A função $AIA$ recebe três parâmetros: $\boldsymbol{x}$ = vetor da variável de interesse; $\boldsymbol{A}$ = aréa da população; e $\boldsymbol{a}$ = tamanho da unidade de amostra. Internamente a função faz o cálculo do Fator de Proporcionalidade (FP) para obter os parâmetros estimados em hectare (ha):
+
+
+```{r, eval=TRUE,collapse=TRUE}
+AIA <- function(x,A,a){
+  FP <- 10000/a
+  x <- x*FP
+  Soma <- sum(x)
+  Media <- mean(x, na.rm = TRUE)
+  Variancia <- var(x)
+  N <- ceiling(A/a)
+  f <- length(x)/N
+  FC <- 1-f
+  E = 0.1*mean(x)
+  t = qt(1-.05/2, df=length(x)-1)
+  
+  if(FC >= 0.98){
+    cat("\n-------------------------------------------------------------\n
+        A população é Infinita.\n")
+    n <- ceiling((t^2*var(x))/E^2)
+    cat("Para atender ao erro estabelecido você deve amostrar", n, "parcelas.\n")
+    VarM <- var(x)/length(x)
+    SdM <- sqrt(VarM)
+    Ea <- t*SdM
+    Er <- (Ea/Media)*100
+    ICI <- Media - Ea
+    ICS <- Media + Ea
+    TotPop <- N*Media
+    ICIP <- ICI*A
+    ICSP <- ICS*A
+    
+    if(n <= length(x)){
+    cat("Esforço amostral satisfatório. O IF é definitivo!")
+    }else{
+    cat("Retorne a campo e meça mais", abs(length(x)-n), "parcelas.")
+    }
+
+  }else{
+    cat("\n-------------------------------------------------------------\n")
+    cat("A população é Finita -", "FC =",round(FC,3),"\n")
+    n <- ceiling((N*t^2*var(x))/(N*E^2 + t^2*var(x)))
+    cat("Para atender ao erro estabelecido você deve amostrar", n, "parcelas.\n")
+    VarM <- var(x)/length(x)*FC
+    SdM <- (sd(x)/sqrt(length(x)))*sqrt(FC)
+    Ea <- t*SdM
+    Er <- (Ea/Media)*100
+    ICI <- Media - Ea
+    ICS <- Media + Ea
+    TotPop <- N*Media
+    ICIP <- ICI*A
+    ICSP <- ICS*A
+    
+    if(n <= length(x)){
+    cat("Esforço amostral satisfatório. O IF é definitivo!")
+    }else{
+    cat("ATENÇÃO: Retorne a campo e meça mais", abs(length(x)-n), "parcelas.")
+    }
+    
+  }
+    cat("\n-------------------------------------------------------------\n")
+  
+  df <- format(data.frame(Parametros=
+                            c("Soma", "Média", "Número de amostras possíveis", 
+                              "Fração de amostragem", "Erro máximo admissível",
+                              "t-student", "Intensidade amostral", 
+                              "Variância da média", "Erro padrão da Média", 
+                              "Erro de amostragem absoluto", 
+                              "Erro de amostragem relativo", 
+                              "IC inferior para média", 
+                              "IC superior para média","Total da população", 
+                              "IC inferior para total da população", 
+                              "IC superior para total da população"),
+                   Estimativas=c(Soma, Media, N, f, E, t, n,
+                                        VarM, SdM, Ea, Er, ICI, ICS,
+                                        TotPop, ICIP, ICSP)), justify = "right", 
+               digits = 6, nsmall=3, scientific=FALSE)
+  return(df)
+}
+```
+
+
+```{r}
+AIA(x = AAS$Volume, A = 400000, a = 600)
+```
+
+
+## Análise fitossociológica
+
+### Estrutura Horizontal
+
+A análise fitossociológica da floresta abrange a estimativa de diversos parâmetros. Os parâmetros fitossociológicos da estrutura horizontal podem ser expressos, em valores absolutos e relativos [@R-mueller1974aims].
+
+
+### Estimadores da estrutura horizontal
+
+Os principais parâmetros fitossociológicos da estrutura horizontal [@R-mueller1974aims; @R-florestas; @R-sanquetta2014inventarios]:
+
+1. Densidade absoluta ($DA_{i}$) da $i$-ésima espécie, em número de individuos por hectare, por espécie;
+2. Densidade relativa ($DR_{i}$) da $i$-ésima espécie, em porcentagem;
+3. Dominância absoluta ($DoA_{i}$) da $i$-ésima espécie ($m^2.ha^{-1}$);
+4. Dominância relativa ($DoR_{i}$) da $i$-ésima espécie, em porcentagem;
+5. Frequência absoluta ($FA_{i}$) da $i$-ésima espécie, em porcentagem;
+6. Frequência relativa ($FR_{i}$) da $i$-ésima espécie, em porcentagem;
+7. Valor de cobertura ($VC_{i}$) da $i$-ésima espécie, em porcentagem;
+8. Porcentagem de cobertura ($PC_{i}$) da $i$-ésima espécie;
+9. Valor de importância ($VI_{i}$) da $i$-ésima espécie, em porcentagem; e
+10. Porcentagem de importância ($PI_{i}$) da $i$-ésima espécie.
+
+
+### Estimando os parâmetros da estrutura horizontal
+
+A seguir os principais parâmetros fitossociológicos da estrutura horizontal serão obtidos usando a linguagem R. Os dados foram obtidos através de parcelas permanentes de monitoramento instaladas em Floresta Ombrofila Mista (FOM), com nível de inclusão de 10cm (DAP $\geq$ 10 cm). Foram estabelecidas 3 parcelas de 1000 $m^2$ (0.1 $ha$), com área total amostra (A) de 0.3 $ha$. Para fins didáticos, serão apresentados os códigos para obter os parâmetros da estrutura horizontal da espécie $\color{red}{\textit{Araucaria angustifolia}}$ e, em seguida, mostrar-se-á um código para obter os parâmetros de todas as espécies de uma só vez usando o pacote **data.table** para manipulação [@R-datatable]:
+
+
+```{r, eval=TRUE, cols.print=2, rows.print=3}
+# Carregando o conjunto de dados
+library("data.table")
+FOM <- fread("Fito.csv")
+FOM
+```
+
+Inicialmente, pode-se fazer uma breve inspeção dos dados:
+
+
+```{r, eval=TRUE, collapse=TRUE}
+nrow(FOM)
+names(FOM)
+dim(FOM)
+```
+
+
+```{r, eval=TRUE, collapse=TRUE}
+# n = Número total de indivíduos amostrados na j-ésima parcela
+FOM[, .(n=.N), by=Parcela][]
+```
+
+
+```{r , eval=TRUE, dpi= 600, fig.height=4, fig.width=7}
+# Número de indivíduos amostrados da i-ésima espécie na j-ésima parcela
+FOM[, .(ni=.N), by=c("Parcela", "Especie")]
+
+# Uma visualização gráfica
+ggplot(FOM[, .(ni=.N), by=c("Parcela", "Especie")], 
+       aes(x=Especie, y=ni, fill=Especie)) + 
+  geom_bar(stat="identity",position="dodge",width = 1,colour="black")+
+  geom_text(aes(label=ni,hjust=-.3, vjust=0.5),
+            position=position_dodge(width = 0.7))+
+  facet_grid(~ Parcela, labeller=labeller(
+    Parcela = Parcela<-as_labeller(
+      c(`1`="Parcela 1",`2`="Parcela 2",`3`="Parcela 3"))))+
+      coord_flip()+
+  geom_text(data=ddply(.data=FOM, .(Parcela), summarize, 
+                       n=paste("n =", length(Especie))), 
+            aes(x=23, y=7, label=n), colour="black", 
+            inherit.aes=FALSE, parse=FALSE)+
+      theme_bw()+
+      theme(axis.line.x=element_line(size=0.5,colour="black"),
+        axis.line.y=element_line(size=0.5,colour="black"),
+        axis.line=element_line(size=1,colour="black"),
+        strip.text.x=element_text(colour=1,size=12,family="serif",face="bold"),
+        strip.background = element_rect(colour="black", fill="snow2"),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.border=element_rect(color="black"),
+        panel.background=element_blank(),
+        axis.text.x=element_text(colour="black",size=12,family="serif",angle=0),
+        axis.text.y=element_text(colour=1,size=12,family="serif",face="italic"),
+        legend.position="none")+
+  scale_x_discrete(name="Espécie")+
+  scale_y_continuous(name="Número de indivíduos",
+                     limits=c(0,8))
+```
+
+
+Obtendo os parâmetros fitossociológicos da estrutura horizontal:
+
+
+**1. Densidade absoluta ** ($DA_{i}$): Para obter a $DA_{i}$ é necessário o conhecimento do número de individuos amostrados da $i$-ésima espécie ($n_{i}$) e da área total amostra (A):
+
+$$
+DA_{i} = \frac{n_{i}}{A}
+$$
+
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+```{r, eval=TRUE, collapse=TRUE}
+DAi <- function(x, A){
+  ni <- nrow(subset(FOM, Especie=="Araucaria angustifolia"))
+  DAi <- ni/A
+  return(DAi)
+}
+
+DAi(x = FOM$Especie, A = 0.3)
+```
+
+**2. Densidade relativa** ($DR_{i}$): Para obter a densidade relativa de cada espécie basta usar a fórmula abaixo. Em que: s = número total de espécies observadas.
+
+$$
+DR_{i} = \frac{DA_{i}}{\sum\limits_{i=1}^s \left(DA_{i} \right)}
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+```{r, eval=TRUE, collapse=TRUE}
+DRi <- function(x, A){
+  ni <- nrow(subset(FOM, Especie=="Araucaria angustifolia"))
+  DAi <- ni/A
+  DTA <- length(x)/A
+  DRi <- (DAi/DTA)*100
+  return(DRi)
+}
+
+DRi(x = FOM$Especie, A = 0.3)
+```
+
+
+**3. Dominância absoluta** ($DoA_{i}$) - $m^2.ha^{-1}$: Para obter a dominância absoluta é necessário o cálculo prévio das áreas transversais ($g_j$) da $j$-ésima árvore.Em seguida, a área basal da espécie ($G_i$) é obtida pela soma das $g_j$ para cada espécie. Por fim, a $DoA_{i}$ da $i$-ésima espécie é calculada pela razão da $G_i$ pela área total amostrada (A):
+
+
+$$
+  \begin{cases}
+    DoA_{i} = \frac{\sum\limits_{j=1}^{n_i} g_{j}}{A} = \frac{G_{i}}{A} \\\\
+    g_{j} = \frac{\pi}{40000}.DAP_{j}^2
+  \end{cases}
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+```{r, eval=TRUE, collapse=TRUE}
+DoAi <- function(data, A, ...){
+  data <- data[Especie=="Araucaria angustifolia"]
+  gi <- data[, .(gi=pi*DAP^2/40000)]
+  Gi <- sum(gi)
+  DoAi <- Gi/A
+  return(DoAi)
+}
+
+DoAi(data=FOM, A=0.3)
+```
+
+**4. Dominância relativa** ($DoR_{i}$): A dominância relativa da $i$-ésima espécie é calculada pela razão da dominância absoluta de cada espécie ($DoA_i$) pela dominância total (soma dos valores de $DoA_i$ para cada espécie). Alternativamente, pode-se fazer a razão da área basal da $i$-ésima espécie ($G_i$) pela soma das áreas basais de todas as espécies amostradas ($G_T$):
+
+
+$$
+DoR_{i} = \frac{DoA_{i}}{\sum\limits_{i=1}^s \left(DoA_{i} \right)}.100 ~=~ \frac{G_{i}}{G_{T}}.100
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+
+```{r, eval=TRUE, collapse=TRUE}
+DoRi <- function(data, A, ...){
+  Gt <- data[, .(gi=pi*DAP^2/40000)]
+  data <- data[Especie=="Araucaria angustifolia"]
+  gi <- data[, .(gi=pi*DAP^2/40000)]
+  Gi <- sum(gi)
+  DoAi <- Gi/A
+  DoRi <- (Gi/sum(Gt))*100
+  return(DoRi)
+}
+
+DoRi(data=FOM, A=0.3)
+```
+
+
+**5. Frequência absoluta** ($FA_{i}$): A frequência absoluta de cada espécie é calculada pela razão do número de unidades de amostras ($U_i$) onde foram encontradas a $i$-ésima espécie e o número total de unidades de amostras ($U_T$). Pode-se multiplicar por 100 para obter o parâmetro relativizado:
+
+
+$$
+FA_{i} = \frac{U_{i}}{U_{T}}.100
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+
+```{r, eval=TRUE, collapse=TRUE}
+FAi <- function(data, ...){
+  Ut <- length(unique(data$Parcela))
+  Ui <- unique(data, by=c("Especie", "Parcela"))[, .(Ui=.N), by="Especie"]
+  Ui <- Ui[Especie=="Araucaria angustifolia", Ui]
+  FAi <- (Ui/Ut)*100
+  return(FAi)
+}
+
+FAi(data=FOM)
+```
+
+**6. Frequência relativa** ($FR_{i}$): A frequência relativa da $i$-ésima espécie é calculada pela razão da frequência absoluta de cada espécie ($FA_i$) pela frequência total (soma dos valores de $FA_i$ para cada espécie):
+
+
+$$
+FR_{i} = \frac{FA_{i}}{\sum\limits_{i=1}^s \left(FA_{i} \right)}.100
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+
+```{r, eval=TRUE, collapse=TRUE}
+FRi <- function(data, ...){
+  Ut <- length(unique(FOM$Parcela))
+  Ui <- unique(FOM, by=c("Especie", "Parcela"))[, .(Ui=.N), by="Especie"]
+  FAi <- Ui[, .(FAi=(Ui/length(unique(FOM$Parcela)))*100)]
+  Ui_AA <- Ui[Especie=="Araucaria angustifolia", Ui]
+  FAi_AA <- (Ui_AA/Ut)*100
+  FRi <- (FAi_AA /sum(FAi))*100
+  return(FRi)
+}
+
+FRi(data=FOM)
+```
+
+
+**7. Valor de cobertura** ($VC_{i}$): O valor de cobertura integra os parâmetros de densidade e dominância relativa, isto é, o $VC_i$ é soma de $DR_i$ e $DoR_i$ de cada espécie:
+
+
+$$
+VC_{i} = DR_{i} + DoR_{i}
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+
+```{r, eval=TRUE, collapse=TRUE}
+VCi <- DRi(x = FOM$Especie, A = 0.3) + DoRi(data=FOM, A=0.3)
+VCi
+```
+
+
+**8. Porcentagem de cobertura** ($PC_{i}$): Por extensão, pode-se obter a porcentagem de cobertura da $i$-ésima espécie fazendo-se a média de $DR_i$ e $DoR_i$:
+
+
+$$
+PC_{i} = \frac{DR_{i} + DoR_{i}}{2}
+$$
+$\color{red}{\textit{Araucaria angustifolia}}$
+
+```{r, eval=TRUE, collapse=TRUE}
+PCi <- (DRi(x = FOM$Especie, A = 0.3) + DoRi(data=FOM, A=0.3))/2
+PCi
+```
+
+**9. Valor de importância** ($VI_{i}$): O valor de importância integra os parâmetros de densidade, dominância e frequência relativa, isto é, o $VI_i$ é soma de $DR_i$, $DoR_i$ e $FR_i$ de cada espécie:
+
+
+$$
+VI_{i} = DR_{i} + DoR_{i} + FR_{i}
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+```{r, eval=TRUE, collapse=TRUE}
+VIi <- DRi(x = FOM$Especie, A = 0.3) + DoRi(data=FOM, A=0.3) + FRi(data=FOM)
+VIi
+```
+
+**10. Porcentagem de importância** ($PI_{i}$): Por extensão, pode-se obter a porcentagem de importância da $i$-ésima espécie fazendo-se a média de $DR_i$, $DoR_i$ e $FR_i$:
+
+
+$$
+PI_{i} = \frac{DR_{i} + DoR_{i} + FR_{i}}{3}
+$$
+- $\color{red}{\textit{Araucaria angustifolia}}$
+
+```{r, eval=TRUE, collapse=TRUE}
+PIi <- (DRi(x = FOM$Especie, A = 0.3) + DoRi(data=FOM, A=0.3) + FRi(data=FOM))/3
+PIi
+```
+
+Inicialmente, para melhor compreensão dos cálculos os parâmetros da estrutura horizontal foram obtidos apenas para a espécie $\color{red}{\textit{Araucaria angustifolia}}$. Porém, é possível obter todas as estimativas criando-se apenas uma única função no ambiente R. A seguir é apresentada uma função genérica para obter os parâmetros fitossociológicos da estrutura horizontal. A função **EH** recebe quatro parâmetros: **species** = vetor contendo as espécies inventariadas; **sample** = vetor indicando as parcelas de ocorrência das espécies; **d** = vetor com diâmetro das árvores; e **A** = escalar indicando a área total amostrada:
+
+
+```{r, eval=TRUE, collapse=TRUE}
+# Uma função genérica
+EH <- function(species, sample, d, A,...){
+  DT <- data.table(species=species,sample=sample,d=d)
+  DT <- DT[,`:=`(gi=pi*d^2/40000)]
+  Ui <- unique(DT, by=c("species", "sample"))[, .(Ui=.N), by="species"][order(species)]
+  ni <- DT[, .(ni=.N, Gi = sum(gi)), by="species"]
+  ni <- ni[Ui,on="species"]
+  EH <- ni[,DAi := ni/A,
+           ][,DRi := (DAi/sum(DAi))*100,
+             ][,DoAi := Gi/A,
+               ][,DoRi := (DoAi/sum(DoAi))*100,
+                 ][,VC := DRi + DoRi,
+                   ][,PC := VC/2,
+                     ][,FAi := (Ui/length(unique(DT$sample)))*100,
+                       ][,FRi := (FAi/sum(FAi))*100,
+                         ][,VIi := DRi + DoRi + FRi,
+                           ][,PIi := VIi/3][order(-VIi)]
+  return(EH)
+}
+```
+
+
+```{r,eval = TRUE, size='footnotesize', results='asis', warning=FALSE}
+EH <- EH(species=FOM$Especie, sample=FOM$Parcela, d=FOM$DAP, A=0.3)
+
+kable(EH, format = "html", booktabs = TRUE) %>%
+  kable_styling(font_size = 14) %>%
+  kableExtra::landscape()
+```
+
+
+**REFERENCIAL TEÓRICO**
+
+**1. Manuais técnicos**
+
+[\textcolor{blue}{\textbf{R Language Definition}}](http://stat.ethz.ch/R-manual/R-devel/doc/manual/R-lang.html#Objects)
+
+[\textcolor{blue}{\textbf{An Introduction to R}}](https://cran.r-project.org/) - is based on the former "Notes on R", gives an introduction to the language and how to use R for doing statistical analysis and graphics.
+
+**2. Legislação**
+
+BRASIL. Resolução nº 406, de 2 de fevereiro de 2009. Estabelece parâmetros técnicos a serem adotados na elaboração, apresentação, avaliação técnica e execução de Plano de Manejo Florestal Sustentável - PMFS com fins madeireiros, para florestas nativas e suas formas de sucessão no bioma Amazônia. Diário Oficial [da República Federativa do Brasil], Brasília, nº 26, p. 100, 6 de fevereiro de 2009. Seção 1. \newline
